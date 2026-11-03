@@ -12,9 +12,13 @@
             --bg-color: #f4f6f4;
             --card-bg: #ffffff;
             --text-main: #2d3748;
-            --text-muted: #4a5568;
+            --text-muted: #718096;
             --circle-empty: #e2e8f0;
             --circle-filled: #1b4332;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -74,15 +78,11 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             font-size: 13px;
-        }
-
-        .day-nav button:active {
-            transform: scale(0.95);
         }
 
         #current-day-title {
@@ -91,42 +91,59 @@
             color: var(--primary);
         }
 
-        /* Книга / Карточка */
+        /* Карточка дня */
         .book-card {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            position: relative;
+        }
+
+        /* Блок дат и лунного календаря */
+        .date-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 14px;
+            border: 1px solid #e2e8f0;
         }
 
         .date-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
             font-size: 13px;
-            color: var(--text-muted);
-            border-bottom: 1px solid #edf2f7;
-            padding-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .date-row input {
             border: 1px solid #cbd5e0;
             border-radius: 6px;
             padding: 4px 8px;
-            font-size: 13px;
+            font-size: 12px;
         }
 
-        /* Сетка кружков (100 штук) - увеличили размер и отступы для цифр */
+        .hijri-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            padding-top: 4px;
+            border-top: 1px dashed #cbd5e0;
+        }
+
+        /* Сетка кружков с цифрами 10 ВНУТРИ */
         .circles-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 6px 4px;
-            margin-bottom: 25px;
+            gap: 6px;
+            margin-bottom: 16px;
         }
 
         .circle {
+            width: 100%;
             aspect-ratio: 1;
             background-color: var(--circle-empty);
             border-radius: 50%;
@@ -134,72 +151,66 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
-            position: relative;
+            font-size: 10px;
+            font-weight: bold;
+            color: #4a5568;
+            user-select: none;
+            transition: all 0.15s ease;
         }
 
         .circle.filled {
             background-color: var(--circle-filled);
-            box-shadow: 0 2px 6px rgba(27, 67, 50, 0.3);
-        }
-
-        /* Четкие и видимые цифры 10 под каждым кружком */
-        .circle::after {
-            content: '10';
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--text-muted);
-            position: absolute;
-            bottom: -14px;
-        }
-        .circle.filled::after {
-            color: var(--primary);
-            font-weight: bold;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(27, 67, 50, 0.4);
         }
 
         .day-stats {
             text-align: center;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: bold;
             color: var(--primary);
-            margin-top: 15px;
+            margin-bottom: 12px;
         }
 
-        /* Кнопки */
-        .flip-btn {
-            width: 100%;
+        /* Блок Хадисов внизу (Листалка) */
+        .hadith-card {
+            background: #faf6ed;
+            border: 1.5px solid var(--secondary);
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .hadith-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .hadith-header h3 {
+            margin: 0;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .hadith-nav-btn {
             background: var(--secondary);
             color: #1a202c;
             border: none;
-            padding: 11px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 14px;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-            margin-top: 10px;
+            font-weight: bold;
         }
 
-        /* Обратная сторона (Мудрость) */
-        .back-side {
-            display: none;
-            background: #faf6ed;
-            border: 2px dashed var(--secondary);
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 15px;
-        }
-
-        .back-side h3 {
-            margin-top: 0;
-            color: var(--primary);
-            font-size: 15px;
-        }
-
-        .back-side p {
+        .hadith-text {
             font-size: 13px;
             line-height: 1.5;
-            color: #4a5568;
+            color: #2d3748;
+            margin: 0;
+            min-height: 50px;
         }
     </style>
 </head>
@@ -220,24 +231,36 @@
     </div>
 
     <!-- Основная страница -->
-    <div class="book-card" id="front-page">
-        <div class="date-row">
-            <span>Дата:</span>
-            <input type="date" id="date-input" onchange="saveDate()">
+    <div class="book-card">
+        <!-- Блок Даты и Лунного Календаря -->
+        <div class="date-section">
+            <div class="date-row">
+                <span>Григорианская дата:</span>
+                <input type="date" id="date-input" onchange="onDateChange()">
+            </div>
+            <div class="hijri-row">
+                <span>🌙 Хиджра:</span>
+                <span id="hijri-date-text">Загрузка...</span>
+            </div>
         </div>
 
+        <!-- 100 кружков -->
         <div class="circles-grid" id="circles-container"></div>
 
         <div class="day-stats" id="day-stats-text">Выполнено за день: 0 / 1000</div>
 
-        <button class="flip-btn" onclick="togglePage()">📖 Перевернуть (Польза дня)</button>
-    </div>
-
-    <!-- Обратная сторона -->
-    <div class="book-card back-side" id="back-page">
-        <h3>✨ Польза и Напоминание</h3>
-        <p id="wisdom-text">«Истинно, истигфар стирает грехи, открывает двери милости и приводит к утешению в трудные времена».</p>
-        <button class="flip-btn" onclick="togglePage()">↩ Вернуться к кружкам</button>
+        <!-- Ниже расположенный блок Хадисов и Пользы (Листалка) -->
+        <div class="hadith-card">
+            <div class="hadith-header">
+                <h3>✨ Польза дня & Хадис</h3>
+                <div>
+                    <button class="hadith-nav-btn" onclick="changeHadith(-1)">←</button>
+                    <span id="hadith-counter" style="font-size: 11px; margin: 0 4px;">1/5</span>
+                    <button class="hadith-nav-btn" onclick="changeHadith(1)">→</button>
+                </div>
+            </div>
+            <p class="hadith-text" id="hadith-text-content"></p>
+        </div>
     </div>
 </div>
 
@@ -246,18 +269,35 @@
     tg.expand();
 
     let currentDay = 1;
+    let currentHadithIndex = 0;
     const totalDays = 40;
     
-    const wisdoms = [
+    const hadiths = [
         "«Кто постоянно совершает истигфар, тому Аллах найдет выход из любой тесноты и утешение от каждой печали» (Абу Дауд).",
-        "Истигфар — это лучший ключ к прощению и очищению сердца от ежедневных ошибок.",
-        "Посланник Аллаха (мир ему) говорил, что он прощает Аллаха и кается перед Ним более ста раз в день.",
-        "Истигфар привлекает ризк (удел) и дарует силы там, где кажется, что их уже нет.",
-        "Сказал Аль-Хасан аль-Басри: «Чаще просите прощения у Аллаха в своих домах, за вашими столами, на дорогах и на рынках, ибо вы не знаете, когда снизойдет милость»."
+        "Посланник Аллаха (мир ему) сказал: «Повинен тот, кто совершил грех, а затем встал, совершил омовение, помолился и попросил прощения у Аллаха — и Аллах простит его».",
+        "Истигфар — это ключ к прощению, очищению сердца и привлечению благословенного удела (ризк).",
+        "Сказал Аль-Хасан аль-Басри: «Чаще просите прощения у Аллаха в своих домах, за вашими столами, на дорогах и на рынках, ибо вы не знаете, когда снизойдет милость».",
+        "Посланник Аллаха (мир ему) просил прощения у Аллаха и каялся перед Ним более ста раз в день."
     ];
 
     function getStorageKey(day) { return `istigfar_day_${day}`; }
     function getDateKey(day) { return `istigfar_date_${day}`; }
+
+    // Конвертер в Лунный календарь Хиджры
+    function updateHijriDate(dateString) {
+        try {
+            const dateParts = dateString.split('-');
+            const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            const formatter = new Intl.DateTimeFormat('ru-RU-u-ca-islamic-uma', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            document.getElementById('hijri-date-text').innerText = formatter.format(dateObj) + " AH";
+        } catch (e) {
+            document.getElementById('hijri-date-text').innerText = "Определяется...";
+        }
+    }
 
     function initDay() {
         document.getElementById('current-day-title').innerText = `День ${currentDay}`;
@@ -271,6 +311,7 @@
         for (let i = 0; i < 100; i++) {
             const circle = document.createElement('div');
             circle.className = `circle ${savedData[i] ? 'filled' : ''}`;
+            circle.innerText = '10'; // Цифра 10 прямо ВНУТРИ
             circle.onclick = () => toggleCircle(i);
             container.appendChild(circle);
             if (savedData[i]) filledCount++;
@@ -280,14 +321,15 @@
 
         const savedDate = localStorage.getItem(getDateKey(currentDay)) || new Date().toISOString().split('T')[0];
         document.getElementById('date-input').value = savedDate;
+        updateHijriDate(savedDate);
 
-        document.getElementById('wisdom-text').innerText = wisdoms[(currentDay - 1) % wisdoms.length];
+        currentHadithIndex = (currentDay - 1) % hadiths.length;
+        showHadith();
     }
 
     function toggleCircle(index) {
-        // Виброотклик телефона при клике на кружок
         if (tg.HapticFeedback) {
-            tg.HapticFeedback.impactOccurred('medium');
+            tg.HapticFeedback.impactOccurred('light');
         }
 
         let savedData = JSON.parse(localStorage.getItem(getStorageKey(currentDay))) || Array(100).fill(false);
@@ -317,28 +359,25 @@
         currentDay += direction;
         if (currentDay < 1) currentDay = 1;
         if (currentDay > totalDays) currentDay = totalDays;
-        
-        document.getElementById('front-page').style.display = 'block';
-        document.getElementById('back-page').style.display = 'none';
-        
         initDay();
     }
 
-    function saveDate() {
+    function onDateChange() {
         const dateVal = document.getElementById('date-input').value;
         localStorage.setItem(getDateKey(currentDay), dateVal);
+        updateHijriDate(dateVal);
     }
 
-    function togglePage() {
-        const front = document.getElementById('front-page');
-        const back = document.getElementById('back-page');
-        if (front.style.display === 'none') {
-            front.style.display = 'block';
-            back.style.display = 'none';
-        } else {
-            front.style.display = 'none';
-            back.style.display = 'block';
-        }
+    function changeHadith(direction) {
+        currentHadithIndex += direction;
+        if (currentHadithIndex < 0) currentHadithIndex = hadiths.length - 1;
+        if (currentHadithIndex >= hadiths.length) currentHadithIndex = 0;
+        showHadith();
+    }
+
+    function showHadith() {
+        document.getElementById('hadith-text-content').innerText = hadiths[currentHadithIndex];
+        document.getElementById('hadith-counter').innerText = `${currentHadithIndex + 1}/${hadiths.length}`;
     }
 
     initDay();
