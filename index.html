@@ -12,7 +12,7 @@
             --bg-color: #f4f6f4;
             --card-bg: #ffffff;
             --text-main: #2d3748;
-            --text-muted: #718096;
+            --text-muted: #4a5568;
             --circle-empty: #e2e8f0;
             --circle-filled: #1b4332;
         }
@@ -22,7 +22,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 15px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -34,7 +34,7 @@
             max-width: 450px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             padding-bottom: 30px;
         }
 
@@ -42,20 +42,20 @@
         .header {
             background: var(--primary);
             color: white;
-            padding: 15px;
+            padding: 14px;
             border-radius: 16px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(27, 67, 50, 0.2);
         }
 
         .header h1 {
-            margin: 0 0 5px 0;
-            font-size: 20px;
+            margin: 0 0 4px 0;
+            font-size: 19px;
             color: var(--secondary);
         }
 
         .total-progress {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
         }
 
@@ -65,7 +65,7 @@
             align-items: center;
             justify-content: space-between;
             background: var(--card-bg);
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
@@ -74,11 +74,11 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .day-nav button:active {
@@ -86,7 +86,7 @@
         }
 
         #current-day-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: bold;
             color: var(--primary);
         }
@@ -95,7 +95,7 @@
         .book-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             position: relative;
         }
@@ -104,11 +104,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            font-size: 14px;
+            margin-bottom: 12px;
+            font-size: 13px;
             color: var(--text-muted);
             border-bottom: 1px solid #edf2f7;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
         .date-row input {
@@ -118,12 +118,12 @@
             font-size: 13px;
         }
 
-        /* Сетка кружков (100 штук) */
+        /* Сетка кружков (100 штук) - увеличили размер и отступы для цифр */
         .circles-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px 4px;
+            margin-bottom: 25px;
         }
 
         .circle {
@@ -143,12 +143,14 @@
             box-shadow: 0 2px 6px rgba(27, 67, 50, 0.3);
         }
 
+        /* Четкие и видимые цифры 10 под каждым кружком */
         .circle::after {
             content: '10';
-            font-size: 8px;
+            font-size: 9px;
+            font-weight: 600;
             color: var(--text-muted);
             position: absolute;
-            bottom: -12px;
+            bottom: -14px;
         }
         .circle.filled::after {
             color: var(--primary);
@@ -157,22 +159,22 @@
 
         .day-stats {
             text-align: center;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--primary);
             margin-top: 15px;
         }
 
-        /* Кнопка переворота страницы */
+        /* Кнопки */
         .flip-btn {
             width: 100%;
             background: var(--secondary);
             color: #1a202c;
             border: none;
-            padding: 12px;
+            padding: 11px;
             border-radius: 12px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
             margin-top: 10px;
@@ -184,18 +186,18 @@
             background: #faf6ed;
             border: 2px dashed var(--secondary);
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             margin-top: 15px;
         }
 
         .back-side h3 {
             margin-top: 0;
             color: var(--primary);
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .back-side p {
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.5;
             color: #4a5568;
         }
@@ -217,23 +219,21 @@
         <button onclick="changeDay(1)">Вперед →</button>
     </div>
 
-    <!-- Основная страница (Лицевая сторона с кружками) -->
+    <!-- Основная страница -->
     <div class="book-card" id="front-page">
         <div class="date-row">
             <span>Дата:</span>
             <input type="date" id="date-input" onchange="saveDate()">
         </div>
 
-        <div class="circles-grid" id="circles-container">
-            <!-- Кружки генерируются через JS -->
-        </div>
+        <div class="circles-grid" id="circles-container"></div>
 
         <div class="day-stats" id="day-stats-text">Выполнено за день: 0 / 1000</div>
 
         <button class="flip-btn" onclick="togglePage()">📖 Перевернуть (Польза дня)</button>
     </div>
 
-    <!-- Обратная сторона (Мудрость) -->
+    <!-- Обратная сторона -->
     <div class="book-card back-side" id="back-page">
         <h3>✨ Польза и Напоминание</h3>
         <p id="wisdom-text">«Истинно, истигфар стирает грехи, открывает двери милости и приводит к утешению в трудные времена».</p>
@@ -248,28 +248,20 @@
     let currentDay = 1;
     const totalDays = 40;
     
-    // База мудрости для дней
     const wisdoms = [
         "«Кто постоянно совершает истигфар, тому Аллах найдет выход из любой тесноты и утешение от каждой печали» (Абу Дауд).",
         "Истигфар — это лучший ключ к прощению и очищению сердца от ежедневных ошибок.",
         "Посланник Аллаха (мир ему) говорил, что он прощает Аллаха и кается перед Ним более ста раз в день.",
-        "Истигфар привлекает ризк (удел) и дарует силы там, где кажется, что их уже нет."
+        "Истигфар привлекает ризк (удел) и дарует силы там, где кажется, что их уже нет.",
+        "Сказал Аль-Хасан аль-Басри: «Чаще просите прощения у Аллаха в своих домах, за вашими столами, на дорогах и на рынках, ибо вы не знаете, когда снизойдет милость»."
     ];
 
-    // Инициализация данных в localStorage
-    function getStorageKey(day) {
-        return `istigfar_day_${day}`;
-    }
-
-    function getDateKey(day) {
-        return `istigfar_date_${day}`;
-    }
+    function getStorageKey(day) { return `istigfar_day_${day}`; }
+    function getDateKey(day) { return `istigfar_date_${day}`; }
 
     function initDay() {
-        document.getElementById('current-day-title.innerText') // noop
         document.getElementById('current-day-title').innerText = `День ${currentDay}`;
         
-        // Генерация 100 кружков
         const container = document.getElementById('circles-container');
         container.innerHTML = '';
         
@@ -286,15 +278,18 @@
 
         updateStats(filledCount);
 
-        // Дата
         const savedDate = localStorage.getItem(getDateKey(currentDay)) || new Date().toISOString().split('T')[0];
         document.getElementById('date-input').value = savedDate;
 
-        // Мудрость
         document.getElementById('wisdom-text').innerText = wisdoms[(currentDay - 1) % wisdoms.length];
     }
 
     function toggleCircle(index) {
+        // Виброотклик телефона при клике на кружок
+        if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
         let savedData = JSON.parse(localStorage.getItem(getStorageKey(currentDay))) || Array(100).fill(false);
         savedData[index] = !savedData[index];
         localStorage.setItem(getStorageKey(currentDay), JSON.stringify(savedData));
@@ -323,7 +318,6 @@
         if (currentDay < 1) currentDay = 1;
         if (currentDay > totalDays) currentDay = totalDays;
         
-        // Показываем лицевую сторону при смене дня
         document.getElementById('front-page').style.display = 'block';
         document.getElementById('back-page').style.display = 'none';
         
@@ -347,7 +341,6 @@
         }
     }
 
-    // Первый запуск
     initDay();
     updateTotalProgress();
 </script>
