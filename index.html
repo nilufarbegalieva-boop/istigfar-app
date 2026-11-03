@@ -10,7 +10,7 @@
             --primary: #1b4332;
             --secondary: #d4af37;
             --bg-color: #0b0f0d;
-            --card-bg: rgba(30, 38, 32, 0.8);
+            --card-bg: rgba(30, 38, 32, 0.85);
             --card-border: rgba(255, 255, 255, 0.08);
             --text-main: #f0f4f1;
             --text-muted: #94a3b8;
@@ -78,9 +78,7 @@
         }
 
         .profile-avatar {
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            background: var(--primary);
+            width: 50px; height: 50px; border-radius: 50%; background: var(--primary);
             display: flex; align-items: center; justify-content: center;
             font-size: 20px; font-weight: bold; color: var(--secondary);
             border: 2px solid var(--secondary); overflow: hidden;
@@ -117,16 +115,16 @@
 
         .day-stats { text-align: center; font-size: 14px; font-weight: bold; color: var(--accent); margin-top: 12px; }
 
-        /* Трекеры намазов */
+        /* График намазов по дням недели */
         .namaz-tracker-grid {
-            display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 8px;
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 8px;
         }
         .namaz-day-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
             border-radius: 10px; padding: 8px 2px; text-align: center; cursor: pointer;
         }
         .namaz-day-box.done { background: var(--primary); border-color: var(--accent); }
-        .namaz-day-box .d-name { font-size: 9px; color: var(--text-muted); display: block; }
+        .namaz-day-box .d-name { font-size: 10px; color: var(--text-muted); display: block; }
         .namaz-day-box .d-status { font-size: 13px; font-weight: bold; margin-top: 4px; display: block; color: var(--secondary); }
 
         .btn-ios {
@@ -135,10 +133,10 @@
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); margin-top: 8px;
         }
 
-        /* Тексты */
-        .arabic { font-size: 18px; text-align: right; color: var(--secondary); font-family: serif; margin-bottom: 8px; line-height: 2.0; }
-        .translit { color: #cbd5e1; margin-bottom: 6px; font-style: italic; font-size: 12px; line-height: 1.4; }
-        .translation { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
+        /* Тексты аятов */
+        .arabic { font-size: 18px; text-align: right; color: var(--secondary); font-family: serif; margin-bottom: 6px; line-height: 2.2; }
+        .translit { color: #cbd5e1; margin-bottom: 4px; font-style: italic; font-size: 12px; line-height: 1.4; }
+        .translation { color: var(--text-muted); font-size: 12px; line-height: 1.4; margin-bottom: 12px; }
 
         /* Нижнее меню */
         .tab-bar {
@@ -164,8 +162,7 @@
             margin: 20px auto; border: 1px solid var(--secondary); box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
-        /* Интерактивные календари в профиле */
-        .calendar-row {
+        .history-row {
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 10px; margin-bottom: 6px; font-size: 12px;
             border: 1px solid var(--card-border);
@@ -185,7 +182,7 @@
         </div>
     </div>
 
-    <!-- 1. ГЛАВНАЯ (Истигфар) -->
+    <!-- 1. ГЛАВНАЯ (Зикры на 40 дней) -->
     <div id="tab-home" class="tab-content active">
         <div class="day-nav">
             <button onclick="changeDay(-1)">← Назад</button>
@@ -202,10 +199,11 @@
                 </div>
             </div>
             <div class="day-stats" id="day-stats-text">Выполнено за сегодня: 0 / 1000</div>
-            <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px 14px; margin-top: 12px; font-size: 12px; display: flex; justify-content: space-between;">
-                <span>📊 Всего за 40 дней:</span>
+            <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px 14px; margin-top: 12px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span>📊 Всего за цикл:</span>
                 <b id="total-progress-text" style="color: var(--secondary);">0 / 40 000</b>
             </div>
+            <button class="btn-ios" style="background: var(--primary); color: white; margin-top: 10px;" onclick="resetCycle()">🔄 Завершить круг / Новый цикл</button>
         </div>
 
         <div class="card">
@@ -217,12 +215,12 @@
     <!-- 2. СУННА И СУРЫ (Намазы и Сурэ Аль-Вакия, Духа, Кахф) -->
     <div id="tab-namaz" class="tab-content">
         <div class="card">
-            <h2>🌙 Тахаджуд Намаз (7 дней)</h2>
+            <h2>🌙 Тахаджуд Намаз (График по дням недели)</h2>
             <div class="namaz-tracker-grid" id="tahajjud-grid"></div>
         </div>
 
         <div class="card">
-            <h2>☀️ Духа Намаз (7 дней)</h2>
+            <h2>☀️ Духа Намаз (График по дням недели)</h2>
             <div class="namaz-tracker-grid" id="duha-grid"></div>
         </div>
 
@@ -240,7 +238,7 @@
 
         <div class="card">
             <h2>🛡️ Сура «Аль-Кахф» (Пещера)</h2>
-            <p style="font-size: 12px; color: var(--text-muted);">Защита от смуты Даджаля (читается по пятницам).</p>
+            <p style="font-size: 12px; color: var(--text-muted);">Защита от смуты (читать по пятницам).</p>
             <button class="btn-ios" onclick="openFullSura('kahf')">Читать полностью</button>
         </div>
     </div>
@@ -255,39 +253,34 @@
         </div>
     </div>
 
-    <!-- 4. ПРОФИЛЬ И КАЛЕНДАРИ ИСТОРИИ -->
+    <!-- 4. ПРОФИЛЬ И ИСТОРИЯ ЦИКЛОВ -->
     <div id="tab-menu" class="tab-content">
         <div class="card">
-            <h2>👤 Данные профиля</h2>
+            <h2>👤 Профиль Telegram</h2>
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Имя: <b id="m-name" style="color:var(--text-main)"></b></p>
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Username: <b id="m-user" style="color:var(--text-main)"></b></p>
         </div>
 
         <div class="card">
-            <h2>📅 Календарь Тахаджуд намаза</h2>
-            <div id="calendar-tahajjud" style="display: flex; flex-direction: column; gap: 4px;"></div>
+            <h2>📜 История прошлых циклов Истигфара</h2>
+            <button class="btn-ios" onclick="toggleHistoryModal()">Открыть архив истории</button>
         </div>
 
         <div class="card">
-            <h2>📅 Календарь Духа намаза</h2>
-            <div id="calendar-duha" style="display: flex; flex-direction: column; gap: 4px;"></div>
-        </div>
-
-        <div class="card">
-            <h2>📊 Календарь Зикров (Истигфар)</h2>
-            <div id="calendar-zikr" style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;"></div>
+            <h2>📊 Детальный график зикров (Текущий цикл)</h2>
+            <div id="calendar-zikr" style="display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;"></div>
         </div>
     </div>
 
 </div>
 
-<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ЧТЕНИЯ СУР -->
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ЧТЕНИЯ СУР И ИСТОРИИ -->
 <div id="reader-modal" class="modal">
     <div class="modal-content">
         <button onclick="closeModal()" style="float: right; background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">✕ Закрыть</button>
         <h2 id="modal-title" style="color: var(--secondary); font-size: 16px; margin-top: 0;"></h2>
         <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 12px 0;">
-        <div id="modal-body" style="max-height: 65vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;"></div>
+        <div id="modal-body" style="max-height: 65vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;"></div>
     </div>
 </div>
 
@@ -317,6 +310,7 @@
 
     let currentDay = 1;
     const totalDays = 40;
+    const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
     const hadithsAndScholars = [
         "«Кто постоянно совершает истигфар, тому Аллах найдет выход из любой тесноты и утешение от каждой печали» (Абу Дауд). Ибн Кясир писал, что истигфар открывает небесные благословения и умножает силу человека.",
@@ -352,7 +346,7 @@
         if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
         if (tabId === 'quran') loadQuranList();
-        if (tabId === 'menu') renderCalendars();
+        if (tabId === 'menu') renderMenuStats();
     }
 
     function initDay() {
@@ -395,19 +389,48 @@
         initDay();
     }
 
+    // Сохранение истории в архив и сброс для нового круга 40 дней
+    function resetCycle() {
+        if (confirm("Завершить текущий 40-дневный цикл и начать новый? Прошлые данные сохранятся в истории.")) {
+            let history = JSON.parse(localStorage.getItem('istigfar_history_cycles')) || [];
+            let currentCycleData = {};
+            let totalDone = 0;
+            
+            for (let d = 1; d <= totalDays; d++) {
+                let cnt = parseInt(localStorage.getItem(getStorageKey(d))) || 0;
+                currentCycleData[d] = cnt;
+                totalDone += cnt;
+                localStorage.removeItem(getStorageKey(d)); // очищаем текущий день
+            }
+
+            history.push({
+                date: new Date().toLocaleDateString(),
+                total: totalDone,
+                data: currentCycleData
+            });
+            localStorage.setItem('istigfar_history_cycles', JSON.stringify(history));
+            
+            currentDay = 1;
+            initDay();
+            alert("Новый цикл начат! Прошлые данные записаны в историю.");
+        }
+    }
+
+    // Трекеры намазов по дням недели
     function initNamazTrackers() {
         ['tahajjud', 'duha'].forEach(type => {
             const grid = document.getElementById(`${type}-grid`);
             grid.innerHTML = '';
-            let data = JSON.parse(localStorage.getItem(`namaz_${type}`)) || Array(7).fill(false);
+            let data = JSON.parse(localStorage.getItem(`namaz_${type}_week`)) || Array(7).fill(false);
+            
             for (let i = 0; i < 7; i++) {
                 const box = document.createElement('div');
                 box.className = `namaz-day-box ${data[i] ? 'done' : ''}`;
-                box.innerHTML = `<span class="d-name">День ${i+1}</span><span class="d-status">${data[i] ? '✓' : '—'}</span>`;
+                box.innerHTML = `<span class="d-name">${weekDays[i]}</span><span class="d-status">${data[i] ? '✓' : '—'}</span>`;
                 box.onclick = () => {
                     if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
                     data[i] = !data[i];
-                    localStorage.setItem(`namaz_${type}`, JSON.stringify(data));
+                    localStorage.setItem(`namaz_${type}_week`, JSON.stringify(data));
                     initNamazTrackers();
                 };
                 grid.appendChild(box);
@@ -415,59 +438,59 @@
         });
     }
 
-    // Отрисовка интерактивных календарей в профиле
-    function renderCalendars() {
-        // Тахаджуд календарь
-        const calTahajjud = document.getElementById('calendar-tahajjud');
-        calTahajjud.innerHTML = '';
-        let dataTahajjud = JSON.parse(localStorage.getItem(`namaz_tahajjud`)) || Array(7).fill(false);
-        dataTahajjud.forEach((done, idx) => {
-            calTahajjud.innerHTML += `<div class="calendar-row"><span>День ${idx + 1} (Тахаджуд)</span><b style="color: ${done ? 'var(--accent)' : 'var(--text-muted)'};">${done ? 'Совершен ✓' : 'Не совершен —'}</b></div>`;
-        });
-
-        // Духа календарь
-        const calDuha = document.getElementById('calendar-duha');
-        calDuha.innerHTML = '';
-        let dataDuha = JSON.parse(localStorage.getItem(`namaz_duha`)) || Array(7).fill(false);
-        dataDuha.forEach((done, idx) => {
-            calDuha.innerHTML += `<div class="calendar-row"><span>День ${idx + 1} (Духа)</span><b style="color: ${done ? 'var(--accent)' : 'var(--text-muted)'};">${done ? 'Совершен ✓' : 'Не совершен —'}</b></div>`;
-        });
-
-        // Зикр календарь
+    function renderMenuStats() {
         const calZikr = document.getElementById('calendar-zikr');
         calZikr.innerHTML = '';
         for (let d = 1; d <= totalDays; d++) {
             let cnt = parseInt(localStorage.getItem(getStorageKey(d))) || 0;
-            calZikr.innerHTML += `<div class="calendar-row"><span>День ${d} (Истигфар)</span><b style="color: var(--secondary);">${cnt} / 1000</b></div>`;
+            calZikr.innerHTML += `<div class="history-row"><span>День ${d} (Истигфар)</span><b style="color: var(--secondary);">${cnt} / 1000</b></div>`;
         }
+    }
+
+    function toggleHistoryModal() {
+        let history = JSON.parse(localStorage.getItem('istigfar_history_cycles')) || [];
+        let html = "";
+        if (history.length === 0) {
+            html = "<p style='color:var(--text-muted); font-size:13px; text-align:center;'>Архив пока пуст. Завершите хотя бы один 40-дневный цикл.</p>";
+        } else {
+            history.forEach((cycle, index) => {
+                html += `<div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:8px;">
+                    <b style="color:var(--secondary);">Цикл #${index + 1} от ${cycle.date}</b>
+                    <div style="font-size:12px; color:var(--accent); margin-top:4px;">Всего прочитано: ${cycle.total} / 40 000 зикров</div>
+                </div>`;
+            });
+        }
+        document.getElementById('modal-title').innerText = "📜 История прошлых циклов";
+        document.getElementById('modal-body').innerHTML = html;
+        document.getElementById('reader-modal').style.display = 'block';
     }
 
     function closeModal() { document.getElementById('reader-modal').style.display = 'none'; }
 
-    // Открытие полных сур с транскрипцией
+    // Полные тексты сур с транскрипцией и переводом
     function openFullSura(type) {
         let title = "";
         let content = "";
         if (type === 'waqia') {
             title = "Сура «Аль-Вакия» (Полный текст)";
             content = `
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>إِذَا وَقَعَتِ الْوَاقِعَةُ ۝ لَيْسَ لِوَقْعَتِهَا كَاذِبَةٌ</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Иза вакаати-ль-вакиа. Ляйса ливакаатиха казиба.</div>
-                <div class="translation">1. Когда наступит Событие (Судный день), никто не сочтет ложью его наступление.</div>
+                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>إِذَا وَقَعَتِ الْوَاقِعَةُ ۝ لَيْسَ لِوَقْعَتِهَا كَاذِبَةٌ ۝ خَافِضَةٌ رَّافِعَةٌ ۝ إِذَا رُجَّتِ الْأَرْضُ رَجًّا ۝ وَبُسَّتِ الْجِبَالُ بَسًّا ۝ فَكَانَتْ هَبَاءً مَّنْبَثًّا</div>
+                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Иза вакаати-ль-вакиа. Ляйса ливакаатиха казиба. Хафидатур-рафиа. Иза рудджатиль-арду радджа...</div>
+                <div class="translation">1. Когда наступит Событие (Судный день), никто не сочтет ложью его наступление. 2. Оно унижает и возвышает. 3. Когда земля содрогнется от сотрясения, 4. когда горы крошатся на мелкие кусочки, 5. и превращаются в рассеянную пыль.</div>
             `;
         } else if (type === 'duha') {
             title = "Сура «Ад-Духа» (Полный текст)";
             content = `
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>وَالضُّحَىٰ ۝ وَاللَّيْلِ إِذَا سَجَىٰ ۝ مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Ва-д-духа. Ва-ль-лейли иза саджа. Ма вадда'ака раббука ва ма каля.</div>
-                <div class="translation">1. Клянусь утром! 2. Клянусь ночью, когда она затихает! 3. Не покинул тебя твой Господь и не возненавидел.</div>
+                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>وَالضُّحَىٰ ۝ وَاللَّيْلِ إِذَا سَجَىٰ ۝ مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ ۝ وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ ۝ وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ</div>
+                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Ва-д-духа. Ва-ль-лейли иза саджа. Ма вадда'ака раббука ва ма каля. Ва ляль-ахирату хайрун ляка миналь-уля. Ва лясавфа ю'тыка раббука фатарда.</div>
+                <div class="translation">1. Клянусь утром! 2. Клянусь ночью, когда она затихает! 3. Не покинул тебя твой Господь и не возненавидел. 4. Поистине, будущее для тебя лучше, чем прошлое. 5. Господь твой одарит тебя, и ты будешь удовлетворен.</div>
             `;
         } else if (type === 'kahf') {
-            title = "Сура «Аль-Кахф» (Пещера — Избранное)";
+            title = "Сура «Аль-Кахф» (Избранные аяты / Пещера)";
             content = `
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوَجَا</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Аль-хамду лилляхи-ль-лязи анзаля 'аля 'абдихи-ль-китаба ва лам йадж'аль ляху 'иваджа.</div>
-                <div class="translation">1. Хвала Аллаху, Который ниспослал Своему рабу Книгу и не допустил в ней кривизны.</div>
+                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوَجَا ۝ قَيِّمًا لِيُنْذِرَ بَأْسًا شَدِيدًا مِنْ لَدُنْهُ</div>
+                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Аль-хамду лилляхи-ль-лязи анзаля 'аля 'абдихи-ль-китаба ва лам йадж'аль ляху 'иваджа. Каййиман лиюнзира ба'сан шадидан мин лядунху.</div>
+                <div class="translation">1. Хвала Аллаху, Который ниспослал Своему рабу Книгу и не допустил в ней кривизны, 2. сделав ее правдивой, чтобы она предостерегла от тяжкого наказания от Него...</div>
             `;
         }
         document.getElementById('modal-title').innerText = title;
