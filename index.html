@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Исламский Трекер - Истигфар & Намаз</title>
+    <title>Исламский Супер-Апп</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -30,7 +30,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-bottom: 75px; /* Место под нижнее меню */
+            padding-bottom: 75px;
         }
 
         .container {
@@ -42,17 +42,9 @@
             gap: 12px;
         }
 
-        /* Экраны (вкладки) */
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Шапка */
         .header {
             background: var(--card-bg);
             border: 1px solid rgba(212, 175, 55, 0.2);
@@ -63,18 +55,9 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .header h1 {
-            margin: 0 0 4px 0;
-            font-size: 18px;
-            color: var(--secondary);
-        }
+        .header h1 { margin: 0 0 4px 0; font-size: 18px; color: var(--secondary); }
+        .total-progress { font-size: 12px; color: var(--text-muted); }
 
-        .total-progress {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        /* Навигация дней */
         .day-nav {
             display: flex;
             align-items: center;
@@ -96,13 +79,8 @@
             font-size: 12px;
         }
 
-        #current-day-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--secondary);
-        }
+        #current-day-title { font-size: 16px; font-weight: bold; color: var(--secondary); }
 
-        /* Карточки */
         .card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -119,7 +97,6 @@
             padding-bottom: 8px;
         }
 
-        /* Дата и Хиджра */
         .date-section {
             background: rgba(0,0,0,0.2);
             border-radius: 12px;
@@ -156,7 +133,6 @@
             border-top: 1px dashed rgba(255,255,255,0.1);
         }
 
-        /* Кружки 100 шт */
         .circles-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -194,7 +170,6 @@
             margin-bottom: 10px;
         }
 
-        /* Блок хадисов */
         .hadith-card {
             background: rgba(212, 175, 55, 0.05);
             border: 1px solid rgba(212, 175, 55, 0.2);
@@ -209,11 +184,7 @@
             margin-bottom: 6px;
         }
 
-        .hadith-header h3 {
-            margin: 0;
-            font-size: 13px;
-            color: var(--secondary);
-        }
+        .hadith-header h3 { margin: 0; font-size: 13px; color: var(--secondary); }
 
         .hadith-nav-btn {
             background: var(--secondary);
@@ -226,15 +197,8 @@
             font-weight: bold;
         }
 
-        .hadith-text {
-            font-size: 12px;
-            line-height: 1.4;
-            color: var(--text-main);
-            margin: 0;
-            min-height: 40px;
-        }
+        .hadith-text { font-size: 12px; line-height: 1.4; color: var(--text-main); margin: 0; min-height: 40px; }
 
-        /* Трекеры намазов (Тахаджуд / Духа) */
         .namaz-tracker-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -251,78 +215,29 @@
             cursor: pointer;
         }
 
-        .namaz-day-box.done {
-            background: var(--primary);
-            border-color: var(--accent);
-        }
+        .namaz-day-box.done { background: var(--primary); border-color: var(--accent); }
+        .namaz-day-box .d-name { font-size: 10px; color: var(--text-muted); display: block; }
+        .namaz-day-box .d-status { font-size: 12px; font-weight: bold; margin-top: 4px; display: block; color: var(--secondary); }
 
-        .namaz-day-box .d-name {
-            font-size: 10px;
-            color: var(--text-muted);
-            display: block;
-        }
-
-        .namaz-day-box .d-status {
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 4px;
-            display: block;
-            color: var(--secondary);
-        }
-
-        /* Тексты сур (Аль-Вакия, Духа) */
-        .sura-text-box {
-            background: rgba(0,0,0,0.25);
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 12px;
-            line-height: 1.5;
-            margin-bottom: 10px;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .arabic {
-            font-size: 15px;
-            text-align: right;
-            color: var(--secondary);
-            font-family: serif;
-            margin-bottom: 6px;
-        }
-
-        .translit {
-            color: var(--text-muted);
-            margin-bottom: 4px;
-            font-style: italic;
-        }
-
-        /* Профиль / Регистрация */
-        .profile-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .profile-form input, .profile-form select {
-            background: #121814;
-            border: 1px solid var(--text-muted);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .profile-btn {
+        .btn-full {
+            width: 100%;
             background: var(--secondary);
             color: #121814;
             border: none;
             padding: 10px;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 13px;
             cursor: pointer;
+            margin-top: 8px;
         }
 
-        /* Нижнее меню (Tab bar) */
+        .arabic { font-size: 16px; text-align: right; color: var(--secondary); font-family: serif; margin-bottom: 6px; line-height: 1.8; }
+        .translit { color: var(--text-muted); margin-bottom: 4px; font-style: italic; font-size: 12px; }
+
+        .profile-form { display: flex; flex-direction: column; gap: 10px; }
+        .profile-form input { background: #121814; border: 1px solid var(--text-muted); color: white; padding: 10px; border-radius: 8px; font-size: 13px; }
+
         .tab-bar {
             position: fixed;
             bottom: 0;
@@ -348,14 +263,26 @@
             gap: 3px;
         }
 
-        .tab-item.active {
-            color: var(--accent);
-        }
+        .tab-item.active { color: var(--accent); }
+        .tab-item svg { width: 20px; height: 20px; fill: currentColor; }
 
-        .tab-item svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
+        /* Окно чтения суры */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 18px;
+            max-width: 450px;
+            margin: 20px auto;
+            border: 1px solid var(--secondary);
         }
     </style>
 </head>
@@ -405,95 +332,78 @@
         </div>
     </div>
 
-    <!-- 2. НАМАЗ (Тахаджуд, Духа и Время намазов) -->
+    <!-- 2. НАМАЗ -->
     <div id="tab-namaz" class="tab-content">
         <div class="header">
             <h1>Трекер Намазов</h1>
-            <div class="total-progress">Дополнительные молитвы (Сунна)</div>
+            <div class="total-progress">Дополнительные молитвы</div>
         </div>
 
-        <!-- Тахаджуд 7 дней -->
         <div class="card">
             <h2>🌙 Тахаджуд Намаз (7 дней)</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Нажмите на день, чтобы отметить выполнение:</p>
             <div class="namaz-tracker-grid" id="tahajjud-grid"></div>
         </div>
 
-        <!-- Духа 7 дней -->
         <div class="card">
             <h2>☀️ Духа Намаз (7 дней)</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Нажмите на день, чтобы отметить выполнение:</p>
             <div class="namaz-tracker-grid" id="duha-grid"></div>
         </div>
 
-        <!-- Время намазов -->
         <div class="card">
             <h2>🕌 Время Намазов</h2>
-            <div id="prayer-times-box" style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
-                Город: <span id="user-city" style="color: var(--secondary); font-weight: bold;">Не указан</span><br>
-                Фаджр: 05:20 | Восход: 06:45< Зухр: 12:30 | Аср: 15:10 | Магриб: 18:15 | Иша: 19:40
+            <div id="prayer-times-box" style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px;">
+                Статус: <span id="user-city" style="color: var(--secondary); font-weight: bold;">Не определен</span>
             </div>
+            <button class="btn-full" onclick="fetchPrayerTimesByGPS()">📍 Определить по GPS</button>
         </div>
     </div>
 
-    <!-- 3. КАРТА / КЛЮЧ СЧАСТЬЯ (Аль-Вакия и Сура Духа) -->
+    <!-- 3. КЛЮЧ СЧАСТЬЯ (Аль-Вакия и Духа) -->
     <div id="tab-map" class="tab-content">
         <div class="header">
             <h1>Ключ Счастья</h1>
             <div class="total-progress">Защита от бед и привлечение ризка</div>
         </div>
 
-        <!-- Сура Аль-Вакия -->
         <div class="card">
-            <h2>📖 Сура «Аль-Вакия» (Событие)</h2>
-            <div class="sura-text-box">
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ إِذَا وَقَعَتِ الْوَاقِعَةُ</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Иза вакаати-ль-вакиа.</div>
-                <div style="font-size: 11px; color: var(--text-main);">1. Когда наступит Событие (Судный день)...</div>
-                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
-                <p style="font-size: 11px; color: var(--text-muted); margin:0;">Посланник Аллаха (мир ему) сказал, что чтение суры Аль-Вакия каждую ночь защищает от бедности.</p>
-            </div>
+            <h2>📖 Сура «Аль-Вакия»</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">Чтение этой суры каждую ночь защищает от бедности.</p>
+            <button class="btn-full" onclick="openWaqiaModal()">📖 Читать полностью (Аль-Вакия)</button>
         </div>
 
-        <!-- Сура Духа -->
         <div class="card">
-            <h2>☀️ Сура «Эд-Духа» (Утро)</h2>
-            <div class="sura-text-box">
-                <div class="arabic">وَالضُّحَىٰ وَاللَّيْلِ إِذَا سَجَىٰ</div>
-                <div class="translit">Ва-д-духа. Ва-ль-лейли иза саджа.</div>
-                <div style="font-size: 11px; color: var(--text-main);">1. Клянусь утром! Клянусь ночью, когда она затихает...</div>
-            </div>
+            <h2>☀️ Сура «Ад-Духа»</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">Дарует душевное утешение и избавляет от печалей.</p>
+            <button class="btn-full" onclick="openDuhaModal()">📖 Читать полностью (Ад-Духа)</button>
         </div>
     </div>
 
-    <!-- 4. КОРАН -->
+    <!-- 4. КОРАН (114 Сур) -->
     <div id="tab-quran" class="tab-content">
         <div class="header">
             <h1>Священный Коран</h1>
-            <div class="total-progress">Чтение и заучивание сур</div>
+            <div class="total-progress">Список всех 114 Сур</div>
         </div>
-        <div class="card" style="text-align: center; padding: 30px;">
-            <p style="font-size: 14px; color: var(--secondary);">📖 Раздел Корана наполняется...</p>
-            <p style="font-size: 12px; color: var(--text-muted);">Скодесь появится полный текст Корана с аудио-чтением и переводом смыслов.</p>
+        <div class="card">
+            <h2>📜 Выберите суру для чтения:</h2>
+            <div id="quran-list-container" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+                <p style="font-size: 12px; color: var(--text-muted);">Загрузка списка сур...</p>
+            </div>
         </div>
     </div>
 
     <!-- 5. МЕНЮ / ПРОФИЛЬ -->
     <div id="tab-menu" class="tab-content">
         <div class="header">
-            <h1>Профиль & Регистрация</h1>
-            <div class="total-progress">Ваши личные данные</div>
+            <h1>Профиль</h1>
+            <div class="total-progress">Личные настройки</div>
         </div>
         <div class="card">
-            <h2>👤 Личный кабинет</h2>
+            <h2>👤 Данные пользователя</h2>
             <div class="profile-form">
-                <label style="font-size: 12px; color: var(--text-muted);">Ваше имя:</label>
                 <input type="text" id="reg-name" placeholder="Введите ваше имя">
-                
-                <label style="font-size: 12px; color: var(--text-muted);">Ваш город (для намаза):</label>
-                <input type="text" id="reg-city" placeholder="Например: Алматы, Ташкент, Москва">
-                
-                <button class="profile-btn" onclick="saveProfile()">Сохранить профиль</button>
+                <input type="text" id="reg-city" placeholder="Ваш город">
+                <button class="btn-full" onclick="saveProfile()">Сохранить</button>
             </div>
             <p id="profile-status" style="font-size: 11px; color: var(--accent); text-align: center; margin-top: 10px;"></p>
         </div>
@@ -501,7 +411,17 @@
 
 </div>
 
-<!-- Нижнее меню навигации -->
+<!-- МОДАЛЬНОЕ ОКНО ЧТЕНИЯ -->
+<div id="reader-modal" class="modal">
+    <div class="modal-content">
+        <button onclick="closeModal()" style="float: right; background: var(--primary); color: white; border: none; padding: 4px 10px; border-radius: 6px; cursor: pointer;">✕ Закрыть</button>
+        <h2 id="modal-title" style="color: var(--secondary); font-size: 16px; margin-top: 0;"></h2>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;">
+        <div id="modal-body" style="font-size: 13px; line-height: 1.6; max-height: 70vh; overflow-y: auto;"></div>
+    </div>
+</div>
+
+<!-- Нижнее меню -->
 <div class="tab-bar">
     <button class="tab-item active" onclick="switchTab('home', this)">
         <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -513,10 +433,10 @@
     </button>
     <button class="tab-item" onclick="switchTab('map', this)">
         <svg viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.1V5l6 2.1V19z"/></svg>
-        Аль-Вакия
+        Ключ
     </button>
     <button class="tab-item" onclick="switchTab('quran', this)">
-        <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6  12V4z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
         Коран
     </button>
     <button class="tab-item" onclick="switchTab('menu', this)">
@@ -532,7 +452,7 @@
     let currentDay = 1;
     let currentHadithIndex = 0;
     const totalDays = 40;
-    
+
     const hadiths = [
         "«Кто постоянно совершает истигфар, тому Аллах найдет выход из любой тесноты и утешение от каждой печали» (Абу Дауд).",
         "Посланник Аллаха (мир ему) сказал: «Повинен тот, кто совершил грех, а затем встал, совершил омовение, помолился и попросил прощения у Аллаха — и Аллах простит его».",
@@ -544,24 +464,21 @@
     function getStorageKey(day) { return `istigfar_day_${day}`; }
     function getDateKey(day) { return `istigfar_date_${day}`; }
 
-    // Переключение вкладок
     function switchTab(tabId, element) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
-        
         document.getElementById(`tab-${tabId}`).classList.add('active');
         element.classList.add('active');
         if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+
+        if (tabId === 'quran') loadQuranList();
     }
 
-    // Хиджра дата
     function updateHijriDate(dateString) {
         try {
             const dateParts = dateString.split('-');
             const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-            const formatter = new Intl.DateTimeFormat('ru-RU-u-ca-islamic-uma', {
-                day: 'numeric', month: 'long', year: 'numeric'
-            });
+            const formatter = new Intl.DateTimeFormat('ru-RU-u-ca-islamic-uma', { day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('hijri-date-text').innerText = formatter.format(dateObj) + " AH";
         } catch (e) {
             document.getElementById('hijri-date-text').innerText = "Определяется...";
@@ -641,7 +558,6 @@
         document.getElementById('hadith-counter').innerText = `${currentHadithIndex + 1}/${hadiths.length}`;
     }
 
-    // Трекеры Намазов (7 дней)
     function initNamazTrackers() {
         ['tahajjud', 'duha'].forEach(type => {
             const grid = document.getElementById(`${type}-grid`);
@@ -663,25 +579,112 @@
         });
     }
 
-    // Профиль
+    function fetchPrayerTimesByGPS() {
+        if (navigator.geolocation) {
+            document.getElementById('user-city').innerText = "Определяем GPS...";
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                try {
+                    const today = new Date().toISOString().split('T')[0];
+                    const response = await fetch(`https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lon}&method=2`);
+                    const data = await response.json();
+                    if (data && data.data) {
+                        const t = data.data.timings;
+                        document.getElementById('prayer-times-box').innerHTML = `
+                            <b>Фаджр:</b> ${t.Fajr} | <b>Восход:</b> ${t.Sunrise}<br>
+                            <b>Зухр:</b> ${t.Dhuhr} | <b>Аср:</b> ${t.Asr}<br>
+                            <b>Магриб:</b> ${t.Maghrib} | <b>Иша:</b> ${t.Isha}
+                        `;
+                        document.getElementById('user-city').innerText = "Определено по GPS";
+                    }
+                } catch (e) {
+                    document.getElementById('user-city').innerText = "Ошибка загрузки";
+                }
+            });
+        }
+    }
+
+    // МОДАЛЬНЫЕ ОКНА И ЧТЕНИЕ КОРАНА
+    function closeModal() { document.getElementById('reader-modal').style.display = 'none'; }
+
+    function openWaqiaModal() {
+        document.getElementById('modal-title').innerText = "Сура «Аль-Вакия» (Полный текст)";
+        document.getElementById('modal-body').innerHTML = `
+            <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>إِذَا وَقَعَتِ الْوَاقِعَةُ ۝ لَيْسَ لِوَقْعَتِهَا كَاذِبَةٌ ۝ خَافِضَةٌ رَّافِعَةٌ ۝ إِذَا رُجَّتِ الْأَرْضُ رَجًّا</div>
+            <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Иза вакаати-ль-вакиа. Ляйса ливакаатиха казиба. Хафидатур-рафиа. Иза рудджатиль-арду радджа...</div>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:10px 0;">
+            <p>1. Когда наступит Неизбежное Событие...<br>2. Никто не сочтет ложью его наступление.<br>3. Оно унижает и возвышает.<br>4. Когда земля содрогнется от сотрясения...</p>
+        `;
+        document.getElementById('reader-modal').style.display = 'block';
+    }
+
+    function openDuhaModal() {
+        document.getElementById('modal-title').innerText = "Сура «Ад-Духа» (Полный текст)";
+        document.getElementById('modal-body').innerHTML = `
+            <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>وَالضُّحَىٰ ۝ وَاللَّيْلِ إِذَا سَجَىٰ ۝ مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ ۝ وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ</div>
+            <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Ва-д-духа. Ва-ль-лейли иза саджа. Ма вадда'ака раббука ва ма каля...</div>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:10px 0;">
+            <p>1. Клянусь утром!<br>2. Клянусь ночью, когда она затихает!<br>3. Не покинул тебя твой Господь и не возненавидел.<br>4. Поистине, будущее для тебя лучше, чем прошлое.</p>
+        `;
+        document.getElementById('reader-modal').style.display = 'block';
+    }
+
+    // ЗАГРУЗКА СПИСКА ВСЕХ 114 СУР КОРАНА ИЗ API
+    async function loadQuranList() {
+        const container = document.getElementById('quran-list-container');
+        if (container.children.length > 1) return; // Чтобы не загружать повторно
+
+        try {
+            const res = await fetch('https://api.alquran.cloud/v1/surah');
+            const data = await res.json();
+            container.innerHTML = '';
+
+            data.data.forEach(surah => {
+                const item = document.createElement('div');
+                item.style.cssText = "background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);";
+                item.innerHTML = `
+                    <div>
+                        <b style="color:var(--secondary); font-size:12px;">${surah.number}. ${surah.englishName}</b>
+                        <div style="font-size:10px; color:var(--text-muted);">${surah.englishNameTranslation}</div>
+                    </div>
+                    <span style="color:var(--accent); font-family:serif; font-size:15px;">${surah.name}</span>
+                `;
+                item.onclick = () => loadSurahText(surah.number, surah.englishName);
+                container.appendChild(item);
+            });
+        } catch (e) {
+            container.innerHTML = '<p style="color:red; font-size:12px;">Ошибка загрузки списка Сур</p>';
+        }
+    }
+
+    async function loadSurahText(number, name) {
+        document.getElementById('modal-title').innerText = `Сура ${number}. ${name}`;
+        document.getElementById('modal-body').innerHTML = "Загрузка текста аятов...";
+        document.getElementById('reader-modal').style.display = 'block';
+
+        try {
+            const res = await fetch(`https://api.alquran.cloud/v1/surah/${number}`);
+            const data = await res.json();
+            let html = '';
+            data.data.ayahs.forEach(ayah => {
+                html += `<div class="arabic">${ayah.text} ۝ (${ayah.numberInSurah})</div>`;
+            });
+            document.getElementById('modal-body').innerHTML = html;
+        } catch (e) {
+            document.getElementById('modal-body').innerHTML = "Не удалось загрузить текст суры.";
+        }
+    }
+
     function saveProfile() {
-        const name = document.getElementById('reg-name').value;
-        const city = document.getElementById('reg-city').value;
-        localStorage.setItem('user_name', name);
-        localStorage.setItem('user_city', city);
-        document.getElementById('user-city').innerText = city || 'Не указан';
-        document.getElementById('profile-status').innerText = '✓ Профиль успешно сохранен!';
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        localStorage.setItem('user_name', document.getElementById('reg-name').value);
+        localStorage.setItem('user_city', document.getElementById('reg-city').value);
+        document.getElementById('profile-status').innerText = '✓ Сохранено';
     }
 
     function loadProfile() {
-        const name = localStorage.getItem('user_name');
-        const city = localStorage.getItem('user_city');
-        if (name) document.getElementById('reg-name').value = name;
-        if (city) {
-            document.getElementById('reg-city').value = city;
-            document.getElementById('user-city').innerText = city;
-        }
+        if (localStorage.getItem('user_name')) document.getElementById('reg-name').value = localStorage.getItem('user_name');
+        if (localStorage.getItem('user_city')) document.getElementById('reg-city').value = localStorage.getItem('user_city');
     }
 
     initDay();
