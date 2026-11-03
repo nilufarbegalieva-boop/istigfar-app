@@ -134,9 +134,12 @@
         }
 
         /* Тексты аятов */
-        .arabic { font-size: 18px; text-align: right; color: var(--secondary); font-family: serif; margin-bottom: 6px; line-height: 2.2; }
-        .translit { color: #cbd5e1; margin-bottom: 4px; font-style: italic; font-size: 12px; line-height: 1.4; }
-        .translation { color: var(--text-muted); font-size: 12px; line-height: 1.4; margin-bottom: 12px; }
+        .sura-text-item {
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .translit { color: #cbd5e1; margin-bottom: 4px; font-style: italic; font-size: 13px; line-height: 1.5; }
 
         /* Нижнее меню */
         .tab-bar {
@@ -389,7 +392,6 @@
         initDay();
     }
 
-    // Сохранение истории в архив и сброс для нового круга 40 дней
     function resetCycle() {
         if (confirm("Завершить текущий 40-дневный цикл и начать новый? Прошлые данные сохранятся в истории.")) {
             let history = JSON.parse(localStorage.getItem('istigfar_history_cycles')) || [];
@@ -400,7 +402,7 @@
                 let cnt = parseInt(localStorage.getItem(getStorageKey(d))) || 0;
                 currentCycleData[d] = cnt;
                 totalDone += cnt;
-                localStorage.removeItem(getStorageKey(d)); // очищаем текущий день
+                localStorage.removeItem(getStorageKey(d));
             }
 
             history.push({
@@ -416,7 +418,6 @@
         }
     }
 
-    // Трекеры намазов по дням недели
     function initNamazTrackers() {
         ['tahajjud', 'duha'].forEach(type => {
             const grid = document.getElementById(`${type}-grid`);
@@ -467,30 +468,55 @@
 
     function closeModal() { document.getElementById('reader-modal').style.display = 'none'; }
 
-    // Полные тексты сур с транскрипцией и переводом
+    // Точные полные тексты сур с вашими транскрипциями
     function openFullSura(type) {
         let title = "";
         let content = "";
         if (type === 'waqia') {
-            title = "Сура «Аль-Вакия» (Полный текст)";
+            title = "Сура «Аль-Вакия» (1-10 аят)";
             content = `
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>إِذَا وَقَعَتِ الْوَاقِعَةُ ۝ لَيْسَ لِوَقْعَتِهَا كَاذِبَةٌ ۝ خَافِضَةٌ رَّافِعَةٌ ۝ إِذَا رُجَّتِ الْأَرْضُ رَجًّا ۝ وَبُسَّتِ الْجِبَالُ بَسًّا ۝ فَكَانَتْ هَبَاءً مَّنْبَثًّا</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Иза вакаати-ль-вакиа. Ляйса ливакаатиха казиба. Хафидатур-рафиа. Иза рудджатиль-арду радджа...</div>
-                <div class="translation">1. Когда наступит Событие (Судный день), никто не сочтет ложью его наступление. 2. Оно унижает и возвышает. 3. Когда земля содрогнется от сотрясения, 4. когда горы крошатся на мелкие кусочки, 5. и превращаются в рассеянную пыль.</div>
+                <div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div>
+                <div class="sura-text-item"><div class="translit">1. Иза вака’атиль-ваки’а.</div></div>
+                <div class="sura-text-item"><div class="translit">2. Лейса ли-вака’атиха казиба.</div></div>
+                <div class="sura-text-item"><div class="translit">3. Хафидатур-рафи’а.</div></div>
+                <div class="sura-text-item"><div class="translit">4. Иза руджжатиль-арду раджжа.</div></div>
+                <div class="sura-text-item"><div class="translit">5. Ва буссатиль-джибалу басса.</div></div>
+                <div class="sura-text-item"><div class="translit">6. Фа-канат хабаан мунбасса.</div></div>
+                <div class="sura-text-item"><div class="translit">7. Ва кунтум азваджан саласа.</div></div>
+                <div class="sura-text-item"><div class="translit">8. Фа-асхабуль-майманати ма асхабуль-маймана.</div></div>
+                <div class="sura-text-item"><div class="translit">9. Ва асхабуль-маш’амати ма асхабуль-маш’ама.</div></div>
+                <div class="sura-text-item"><div class="translit">10. Вас-сабикун ас-сабикун.</div></div>
             `;
         } else if (type === 'duha') {
-            title = "Сура «Ад-Духа» (Полный текст)";
+            title = "Сура «Ад-Духа» (Полная)";
             content = `
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>وَالضُّحَىٰ ۝ وَاللَّيْلِ إِذَا سَجَىٰ ۝ مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ ۝ وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ ۝ وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Ва-д-духа. Ва-ль-лейли иза саджа. Ма вадда'ака раббука ва ма каля. Ва ляль-ахирату хайрун ляка миналь-уля. Ва лясавфа ю'тыка раббука фатарда.</div>
-                <div class="translation">1. Клянусь утром! 2. Клянусь ночью, когда она затихает! 3. Не покинул тебя твой Господь и не возненавидел. 4. Поистине, будущее для тебя лучше, чем прошлое. 5. Господь твой одарит тебя, и ты будешь удовлетворен.</div>
+                <div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div>
+                <div class="sura-text-item"><div class="translit">1. Вад-духа.</div></div>
+                <div class="sura-text-item"><div class="translit">2. Валь-лейли иза саджа.</div></div>
+                <div class="sura-text-item"><div class="translit">3. Ма вадда’ака Раббука ва ма каля.</div></div>
+                <div class="sura-text-item"><div class="translit">4. Ва ляль-ахирату хайрул-ляка миналь-уля.</div></div>
+                <div class="sura-text-item"><div class="translit">5. Ва лясауфа ю’тика Раббука фатарда.</div></div>
+                <div class="sura-text-item"><div class="translit">6. Алям яджидка ятиман фа-ава.</div></div>
+                <div class="sura-text-item"><div class="translit">7. Ва ваджадака даллян фа-хада.</div></div>
+                <div class="sura-text-item"><div class="translit">8. Ва ваджадака ‘аилан фа-агна.</div></div>
+                <div class="sura-text-item"><div class="translit">9. Фа-аммаль-ятима фаля такхар.</div></div>
+                <div class="sura-text-item"><div class="translit">10. Ва аммас-са’иля фаля танхар.</div></div>
+                <div class="sura-text-item"><div class="translit">11. Ва амма би-ни’мати Раббика фахаддис.</div></div>
             `;
         } else if (type === 'kahf') {
-            title = "Сура «Аль-Кахф» (Избранные аяты / Пещера)";
+            title = "Сура «Аль-Кахф» (1-10 аят)";
             content = `
-                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوَجَا ۝ قَيِّمًا لِيُنْذِرَ بَأْسًا شَدِيدًا مِنْ لَدُنْهُ</div>
-                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Аль-хамду лилляхи-ль-лязи анзаля 'аля 'абдихи-ль-китаба ва лам йадж'аль ляху 'иваджа. Каййиман лиюнзира ба'сан шадидан мин лядунху.</div>
-                <div class="translation">1. Хвала Аллаху, Который ниспослал Своему рабу Книгу и не допустил в ней кривизны, 2. сделав ее правдивой, чтобы она предостерегла от тяжкого наказания от Него...</div>
+                <div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div>
+                <div class="sura-text-item"><div class="translit">1. Аль-хамду лилляhиль-лязи анзаля ‘аля ‘абдихиль-китаба ва лям ядж’аль-ляху ‘иваджа.</div></div>
+                <div class="sura-text-item"><div class="translit">2. Каййималь-лиюнзира ба’сан шадида-м-миллядунху ва юбашшираль-му’мининаль-лязина я’малюнас-салихати анна ляхум аджран хасана.</div></div>
+                <div class="sura-text-item"><div class="translit">3. Макисина фихи абада.</div></div>
+                <div class="sura-text-item"><div class="translit">4. Ва юнзираль-лязина калюттахазаллаху валяда.</div></div>
+                <div class="sura-text-item"><div class="translit">5. Ма ляхум бихи мин ‘ильмин ва ля ли-аба’ихим. Кабурат калиматан тахруджу мин афвахихим. Ин якулюна илля казиба.</div></div>
+                <div class="sura-text-item"><div class="translit">6. Фаля’алляка бахи’ун нафсака ‘аля асарихим ин лям ю’мину бихазаль-хадиси асафа.</div></div>
+                <div class="sura-text-item"><div class="translit">7. Инна джа’альна ма ‘аляль-арды зинаталь-ляха ли-наблювахум айюхум ахсану ‘амаля.</div></div>
+                <div class="sura-text-item"><div class="translit">8. Ва инна ля-джа’илюна ма ‘аляйха са’идан джуруза.</div></div>
+                <div class="sura-text-item"><div class="translit">9. Ам хасибта анна асхабаль-кахфи вар-ракиими кану мин аятина ‘аджаба.</div></div>
+                <div class="sura-text-item"><div class="translit">10. Из ава аль-фитьяту иляль-кахфи фа-калю Раббана атина мил-ладунка рахматан ва хаййи’ ляна мин амрина рашада.</div></div>
             `;
         }
         document.getElementById('modal-title').innerText = title;
@@ -540,11 +566,12 @@
                 const ayahRu = dataRu.data.ayahs[i];
                 html += `
                     <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 10px;">
-                        <div class="arabic">${ayahAr.text} ۝ (${ayahAr.numberInSurah})</div>
-                        <div class="translation">${ayahRu.text}</div>
+                        <div style="font-size:16px; text-align:right; color:var(--secondary); font-family:serif; margin-bottom:4px;">${ayahAr.text} ۝ (${ayahAr.numberInSurah})</div>
+                        <div style="font-size:12px; color:var(--text-muted);">${ayahRu.text}</div>
                     </div>
                 `;
             }
+            document.getElementById('reader-modal').style.display = 'block';
             document.getElementById('modal-body').innerHTML = html;
         } catch (e) {
             document.getElementById('modal-body').innerHTML = "<p style='color:red;'>Не удалось загрузить суру.</p>";
