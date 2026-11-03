@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книга Истигфара - 40 000</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --secondary: #d4af37;
+            --bg-color: #f4f6f4;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --circle-empty: #e2e8f0;
+            --circle-filled: #1b4332;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 30px;
+        }
+
+        /* Шапка */
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(27, 67, 50, 0.2);
+        }
+
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .total-progress {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Навигация по дням */
+        .day-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .day-nav button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .day-nav button:active {
+            transform: scale(0.95);
+        }
+
+        #current-day-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Книга / Карточка */
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .date-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 10px;
+        }
+
+        .date-row input {
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+
+        /* Сетка кружков (100 штук) */
+        .circles-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .circle {
+            aspect-ratio: 1;
+            background-color: var(--circle-empty);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .circle.filled {
+            background-color: var(--circle-filled);
+            box-shadow: 0 2px 6px rgba(27, 67, 50, 0.3);
+        }
+
+        .circle::after {
+            content: '10';
+            font-size: 8px;
+            color: var(--text-muted);
+            position: absolute;
+            bottom: -12px;
+        }
+        .circle.filled::after {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .day-stats {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 15px;
+        }
+
+        /* Кнопка переворота страницы */
+        .flip-btn {
+            width: 100%;
+            background: var(--secondary);
+            color: #1a202c;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            margin-top: 10px;
+        }
+
+        /* Обратная сторона (Мудрость) */
+        .back-side {
+            display: none;
+            background: #faf6ed;
+            border: 2px dashed var(--secondary);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .back-side h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .back-side p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Шапка -->
+    <div class="header">
+        <h1>Книга Истигфара</h1>
+        <div class="total-progress" id="total-progress-text">Всего прочитано: 0 / 40 000</div>
+    </div>
+
+    <!-- Навигация по дням -->
+    <div class="day-nav">
+        <button onclick="changeDay(-1)">← Назад</button>
+        <span id="current-day-title">День 1</span>
+        <button onclick="changeDay(1)">Вперед →</button>
+    </div>
+
+    <!-- Основная страница (Лицевая сторона с кружками) -->
+    <div class="book-card" id="front-page">
+        <div class="date-row">
+            <span>Дата:</span>
+            <input type="date" id="date-input" onchange="saveDate()">
+        </div>
+
+        <div class="circles-grid" id="circles-container">
+            <!-- Кружки генерируются через JS -->
+        </div>
+
+        <div class="day-stats" id="day-stats-text">Выполнено за день: 0 / 1000</div>
+
+        <button class="flip-btn" onclick="togglePage()">📖 Перевернуть (Польза дня)</button>
+    </div>
+
+    <!-- Обратная сторона (Мудрость) -->
+    <div class="book-card back-side" id="back-page">
+        <h3>✨ Польза и Напоминание</h3>
+        <p id="wisdom-text">«Истинно, истигфар стирает грехи, открывает двери милости и приводит к утешению в трудные времена».</p>
+        <button class="flip-btn" onclick="togglePage()">↩ Вернуться к кружкам</button>
+    </div>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let currentDay = 1;
+    const totalDays = 40;
+    
+    // База мудрости для дней
+    const wisdoms = [
+        "«Кто постоянно совершает истигфар, тому Аллах найдет выход из любой тесноты и утешение от каждой печали» (Абу Дауд).",
+        "Истигфар — это лучший ключ к прощению и очищению сердца от ежедневных ошибок.",
+        "Посланник Аллаха (мир ему) говорил, что он прощает Аллаха и кается перед Ним более ста раз в день.",
+        "Истигфар привлекает ризк (удел) и дарует силы там, где кажется, что их уже нет."
+    ];
+
+    // Инициализация данных в localStorage
+    function getStorageKey(day) {
+        return `istigfar_day_${day}`;
+    }
+
+    function getDateKey(day) {
+        return `istigfar_date_${day}`;
+    }
+
+    function initDay() {
+        document.getElementById('current-day-title.innerText') // noop
+        document.getElementById('current-day-title').innerText = `День ${currentDay}`;
+        
+        // Генерация 100 кружков
+        const container = document.getElementById('circles-container');
+        container.innerHTML = '';
+        
+        let filledCount = 0;
+        let savedData = JSON.parse(localStorage.getItem(getStorageKey(currentDay))) || Array(100).fill(false);
+
+        for (let i = 0; i < 100; i++) {
+            const circle = document.createElement('div');
+            circle.className = `circle ${savedData[i] ? 'filled' : ''}`;
+            circle.onclick = () => toggleCircle(i);
+            container.appendChild(circle);
+            if (savedData[i]) filledCount++;
+        }
+
+        updateStats(filledCount);
+
+        // Дата
+        const savedDate = localStorage.getItem(getDateKey(currentDay)) || new Date().toISOString().split('T')[0];
+        document.getElementById('date-input').value = savedDate;
+
+        // Мудрость
+        document.getElementById('wisdom-text').innerText = wisdoms[(currentDay - 1) % wisdoms.length];
+    }
+
+    function toggleCircle(index) {
+        let savedData = JSON.parse(localStorage.getItem(getStorageKey(currentDay))) || Array(100).fill(false);
+        savedData[index] = !savedData[index];
+        localStorage.setItem(getStorageKey(currentDay), JSON.stringify(savedData));
+        
+        initDay();
+        updateTotalProgress();
+    }
+
+    function updateStats(filledCount) {
+        const totalIstigfar = filledCount * 10;
+        document.getElementById('day-stats-text').innerText = `Выполнено за день: ${totalIstigfar} / 1000`;
+    }
+
+    function updateTotalProgress() {
+        let total = 0;
+        for (let d = 1; d <= totalDays; d++) {
+            let savedData = JSON.parse(localStorage.getItem(getStorageKey(d))) || Array(100).fill(false);
+            let count = savedData.filter(Boolean).length;
+            total += count * 10;
+        }
+        document.getElementById('total-progress-text').innerText = `Всего прочитано: ${total} / 40 000`;
+    }
+
+    function changeDay(direction) {
+        currentDay += direction;
+        if (currentDay < 1) currentDay = 1;
+        if (currentDay > totalDays) currentDay = totalDays;
+        
+        // Показываем лицевую сторону при смене дня
+        document.getElementById('front-page').style.display = 'block';
+        document.getElementById('back-page').style.display = 'none';
+        
+        initDay();
+    }
+
+    function saveDate() {
+        const dateVal = document.getElementById('date-input').value;
+        localStorage.setItem(getDateKey(currentDay), dateVal);
+    }
+
+    function togglePage() {
+        const front = document.getElementById('front-page');
+        const back = document.getElementById('back-page');
+        if (front.style.display === 'none') {
+            front.style.display = 'block';
+            back.style.display = 'none';
+        } else {
+            front.style.display = 'none';
+            back.style.display = 'block';
+        }
+    }
+
+    // Первый запуск
+    initDay();
+    updateTotalProgress();
+</script>
+
+</body>
+</html>
