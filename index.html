@@ -3,67 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Книга Истигфара - 40 000</title>
+    <title>Исламский Трекер - Истигфар & Намаз</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #1b4332;
             --secondary: #d4af37;
-            --bg-color: #f4f6f4;
-            --card-bg: #ffffff;
-            --text-main: #2d3748;
-            --text-muted: #718096;
-            --circle-empty: #e2e8f0;
-            --circle-filled: #1b4332;
+            --bg-color: #121814;
+            --card-bg: #1e2620;
+            --text-main: #f0f4f1;
+            --text-muted: #a3b1a8;
+            --circle-empty: #2a3830;
+            --circle-filled: #2d6a4f;
+            --accent: #52b788;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 12px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            padding-bottom: 75px; /* Место под нижнее меню */
         }
 
         .container {
             width: 100%;
             max-width: 450px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding-bottom: 30px;
+        }
+
+        /* Экраны (вкладки) */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         /* Шапка */
         .header {
-            background: var(--primary);
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             color: white;
             padding: 14px;
             border-radius: 16px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(27, 67, 50, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .header h1 {
             margin: 0 0 4px 0;
-            font-size: 19px;
+            font-size: 18px;
             color: var(--secondary);
         }
 
         .total-progress {
-            font-size: 13px;
-            opacity: 0.9;
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
-        /* Навигация по дням */
+        /* Навигация дней */
         .day-nav {
             display: flex;
             align-items: center;
@@ -71,53 +82,64 @@
             background: var(--card-bg);
             padding: 8px 12px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .day-nav button {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         #current-day-title {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--secondary);
         }
 
-        /* Карточка дня */
-        .book-card {
+        /* Карточки */
+        .card {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
-        /* Блок дат и лунного календаря */
+        .card h2 {
+            font-size: 15px;
+            color: var(--secondary);
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+
+        /* Дата и Хиджра */
         .date-section {
-            background: #f8fafc;
+            background: rgba(0,0,0,0.2);
             border-radius: 12px;
             padding: 10px;
-            margin-bottom: 14px;
-            border: 1px solid #e2e8f0;
+            margin-bottom: 12px;
         }
 
         .date-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 6px;
+            color: var(--text-muted);
         }
 
         .date-row input {
-            border: 1px solid #cbd5e0;
+            background: #121814;
+            border: 1px solid var(--text-muted);
+            color: white;
             border-radius: 6px;
             padding: 4px 8px;
             font-size: 12px;
@@ -128,18 +150,18 @@
             justify-content: space-between;
             align-items: center;
             font-size: 12px;
-            color: var(--primary);
+            color: var(--secondary);
             font-weight: 600;
             padding-top: 4px;
-            border-top: 1px dashed #cbd5e0;
+            border-top: 1px dashed rgba(255,255,255,0.1);
         }
 
-        /* Сетка кружков с цифрами 10 ВНУТРИ */
+        /* Кружки 100 шт */
         .circles-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 5px;
+            margin-bottom: 14px;
         }
 
         .circle {
@@ -151,117 +173,356 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
-            color: #4a5568;
+            color: var(--text-muted);
             user-select: none;
             transition: all 0.15s ease;
         }
 
         .circle.filled {
-            background-color: var(--circle-filled);
+            background-color: var(--accent);
             color: #ffffff;
-            box-shadow: 0 2px 5px rgba(27, 67, 50, 0.4);
+            box-shadow: 0 2px 5px rgba(82, 183, 136, 0.4);
         }
 
         .day-stats {
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 12px;
+            color: var(--secondary);
+            margin-bottom: 10px;
         }
 
-        /* Блок Хадисов внизу (Листалка) */
+        /* Блок хадисов */
         .hadith-card {
-            background: #faf6ed;
-            border: 1.5px solid var(--secondary);
-            border-radius: 14px;
-            padding: 14px;
-            margin-top: 12px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 12px;
         }
 
         .hadith-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .hadith-header h3 {
             margin: 0;
-            font-size: 14px;
-            color: var(--primary);
+            font-size: 13px;
+            color: var(--secondary);
         }
 
         .hadith-nav-btn {
             background: var(--secondary);
-            color: #1a202c;
+            color: #121814;
             border: none;
             border-radius: 6px;
-            padding: 3px 8px;
-            font-size: 12px;
+            padding: 2px 8px;
+            font-size: 11px;
             cursor: pointer;
             font-weight: bold;
         }
 
         .hadith-text {
-            font-size: 13px;
-            line-height: 1.5;
-            color: #2d3748;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-main);
             margin: 0;
-            min-height: 50px;
+            min-height: 40px;
+        }
+
+        /* Трекеры намазов (Тахаджуд / Духа) */
+        .namaz-tracker-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .namaz-day-box {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 8px 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .namaz-day-box.done {
+            background: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .namaz-day-box .d-name {
+            font-size: 10px;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .namaz-day-box .d-status {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+            display: block;
+            color: var(--secondary);
+        }
+
+        /* Тексты сур (Аль-Вакия, Духа) */
+        .sura-text-box {
+            background: rgba(0,0,0,0.25);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .arabic {
+            font-size: 15px;
+            text-align: right;
+            color: var(--secondary);
+            font-family: serif;
+            margin-bottom: 6px;
+        }
+
+        .translit {
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-style: italic;
+        }
+
+        /* Профиль / Регистрация */
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-form input, .profile-form select {
+            background: #121814;
+            border: 1px solid var(--text-muted);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .profile-btn {
+            background: var(--secondary);
+            color: #121814;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Нижнее меню (Tab bar) */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #18201b;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+            gap: 3px;
+        }
+
+        .tab-item.active {
+            color: var(--accent);
+        }
+
+        .tab-item svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Шапка -->
-    <div class="header">
-        <h1>Книга Истигфара</h1>
-        <div class="total-progress" id="total-progress-text">Всего прочитано: 0 / 40 000</div>
-    </div>
 
-    <!-- Навигация по дням -->
-    <div class="day-nav">
-        <button onclick="changeDay(-1)">← Назад</button>
-        <span id="current-day-title">День 1</span>
-        <button onclick="changeDay(1)">Вперед →</button>
-    </div>
-
-    <!-- Основная страница -->
-    <div class="book-card">
-        <!-- Блок Даты и Лунного Календаря -->
-        <div class="date-section">
-            <div class="date-row">
-                <span>Григорианская дата:</span>
-                <input type="date" id="date-input" onchange="onDateChange()">
-            </div>
-            <div class="hijri-row">
-                <span>🌙 Хиджра:</span>
-                <span id="hijri-date-text">Загрузка...</span>
-            </div>
+    <!-- 1. ГЛАВНАЯ (Истигфар) -->
+    <div id="tab-home" class="tab-content active">
+        <div class="header">
+            <h1>Книга Истигфара</h1>
+            <div class="total-progress" id="total-progress-text">Всего прочитано: 0 / 40 000</div>
         </div>
 
-        <!-- 100 кружков -->
-        <div class="circles-grid" id="circles-container"></div>
+        <div class="day-nav">
+            <button onclick="changeDay(-1)">← Назад</button>
+            <span id="current-day-title">День 1</span>
+            <button onclick="changeDay(1)">Вперед →</button>
+        </div>
 
-        <div class="day-stats" id="day-stats-text">Выполнено за день: 0 / 1000</div>
-
-        <!-- Ниже расположенный блок Хадисов и Пользы (Листалка) -->
-        <div class="hadith-card">
-            <div class="hadith-header">
-                <h3>✨ Польза дня & Хадис</h3>
-                <div>
-                    <button class="hadith-nav-btn" onclick="changeHadith(-1)">←</button>
-                    <span id="hadith-counter" style="font-size: 11px; margin: 0 4px;">1/5</span>
-                    <button class="hadith-nav-btn" onclick="changeHadith(1)">→</button>
+        <div class="card">
+            <div class="date-section">
+                <div class="date-row">
+                    <span>Дата:</span>
+                    <input type="date" id="date-input" onchange="onDateChange()">
+                </div>
+                <div class="hijri-row">
+                    <span>🌙 Хиджра:</span>
+                    <span id="hijri-date-text">Загрузка...</span>
                 </div>
             </div>
-            <p class="hadith-text" id="hadith-text-content"></p>
+
+            <div class="circles-grid" id="circles-container"></div>
+            <div class="day-stats" id="day-stats-text">Выполнено за день: 0 / 1000</div>
+
+            <div class="hadith-card">
+                <div class="hadith-header">
+                    <h3>✨ Польза дня & Хадис</h3>
+                    <div>
+                        <button class="hadith-nav-btn" onclick="changeHadith(-1)">←</button>
+                        <span id="hadith-counter" style="font-size: 10px; margin: 0 3px;">1/5</span>
+                        <button class="hadith-nav-btn" onclick="changeHadith(1)">→</button>
+                    </div>
+                </div>
+                <p class="hadith-text" id="hadith-text-content"></p>
+            </div>
         </div>
     </div>
+
+    <!-- 2. НАМАЗ (Тахаджуд, Духа и Время намазов) -->
+    <div id="tab-namaz" class="tab-content">
+        <div class="header">
+            <h1>Трекер Намазов</h1>
+            <div class="total-progress">Дополнительные молитвы (Сунна)</div>
+        </div>
+
+        <!-- Тахаджуд 7 дней -->
+        <div class="card">
+            <h2>🌙 Тахаджуд Намаз (7 дней)</h2>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Нажмите на день, чтобы отметить выполнение:</p>
+            <div class="namaz-tracker-grid" id="tahajjud-grid"></div>
+        </div>
+
+        <!-- Духа 7 дней -->
+        <div class="card">
+            <h2>☀️ Духа Намаз (7 дней)</h2>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Нажмите на день, чтобы отметить выполнение:</p>
+            <div class="namaz-tracker-grid" id="duha-grid"></div>
+        </div>
+
+        <!-- Время намазов -->
+        <div class="card">
+            <h2>🕌 Время Намазов</h2>
+            <div id="prayer-times-box" style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                Город: <span id="user-city" style="color: var(--secondary); font-weight: bold;">Не указан</span><br>
+                Фаджр: 05:20 | Восход: 06:45< Зухр: 12:30 | Аср: 15:10 | Магриб: 18:15 | Иша: 19:40
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. КАРТА / КЛЮЧ СЧАСТЬЯ (Аль-Вакия и Сура Духа) -->
+    <div id="tab-map" class="tab-content">
+        <div class="header">
+            <h1>Ключ Счастья</h1>
+            <div class="total-progress">Защита от бед и привлечение ризка</div>
+        </div>
+
+        <!-- Сура Аль-Вакия -->
+        <div class="card">
+            <h2>📖 Сура «Аль-Вакия» (Событие)</h2>
+            <div class="sura-text-box">
+                <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ إِذَا وَقَعَتِ الْوَاقِعَةُ</div>
+                <div class="translit">Бисмилляхи-р-рахмани-р-рахим. Иза вакаати-ль-вакиа.</div>
+                <div style="font-size: 11px; color: var(--text-main);">1. Когда наступит Событие (Судный день)...</div>
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
+                <p style="font-size: 11px; color: var(--text-muted); margin:0;">Посланник Аллаха (мир ему) сказал, что чтение суры Аль-Вакия каждую ночь защищает от бедности.</p>
+            </div>
+        </div>
+
+        <!-- Сура Духа -->
+        <div class="card">
+            <h2>☀️ Сура «Эд-Духа» (Утро)</h2>
+            <div class="sura-text-box">
+                <div class="arabic">وَالضُّحَىٰ وَاللَّيْلِ إِذَا سَجَىٰ</div>
+                <div class="translit">Ва-д-духа. Ва-ль-лейли иза саджа.</div>
+                <div style="font-size: 11px; color: var(--text-main);">1. Клянусь утром! Клянусь ночью, когда она затихает...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. КОРАН -->
+    <div id="tab-quran" class="tab-content">
+        <div class="header">
+            <h1>Священный Коран</h1>
+            <div class="total-progress">Чтение и заучивание сур</div>
+        </div>
+        <div class="card" style="text-align: center; padding: 30px;">
+            <p style="font-size: 14px; color: var(--secondary);">📖 Раздел Корана наполняется...</p>
+            <p style="font-size: 12px; color: var(--text-muted);">Скодесь появится полный текст Корана с аудио-чтением и переводом смыслов.</p>
+        </div>
+    </div>
+
+    <!-- 5. МЕНЮ / ПРОФИЛЬ -->
+    <div id="tab-menu" class="tab-content">
+        <div class="header">
+            <h1>Профиль & Регистрация</h1>
+            <div class="total-progress">Ваши личные данные</div>
+        </div>
+        <div class="card">
+            <h2>👤 Личный кабинет</h2>
+            <div class="profile-form">
+                <label style="font-size: 12px; color: var(--text-muted);">Ваше имя:</label>
+                <input type="text" id="reg-name" placeholder="Введите ваше имя">
+                
+                <label style="font-size: 12px; color: var(--text-muted);">Ваш город (для намаза):</label>
+                <input type="text" id="reg-city" placeholder="Например: Алматы, Ташкент, Москва">
+                
+                <button class="profile-btn" onclick="saveProfile()">Сохранить профиль</button>
+            </div>
+            <p id="profile-status" style="font-size: 11px; color: var(--accent); text-align: center; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Нижнее меню навигации -->
+<div class="tab-bar">
+    <button class="tab-item active" onclick="switchTab('home', this)">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Главная
+    </button>
+    <button class="tab-item" onclick="switchTab('namaz', this)">
+        <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.38 5.38 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.84C12.92 3.04 12.46 3 12 3z"/></svg>
+        Намаз
+    </button>
+    <button class="tab-item" onclick="switchTab('map', this)">
+        <svg viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.1V5l6 2.1V19z"/></svg>
+        Аль-Вакия
+    </button>
+    <button class="tab-item" onclick="switchTab('quran', this)">
+        <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6  12V4z"/></svg>
+        Коран
+    </button>
+    <button class="tab-item" onclick="switchTab('menu', this)">
+        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        Меню
+    </button>
 </div>
 
 <script>
@@ -283,15 +544,23 @@
     function getStorageKey(day) { return `istigfar_day_${day}`; }
     function getDateKey(day) { return `istigfar_date_${day}`; }
 
-    // Конвертер в Лунный календарь Хиджры
+    // Переключение вкладок
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        element.classList.add('active');
+        if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
+
+    // Хиджра дата
     function updateHijriDate(dateString) {
         try {
             const dateParts = dateString.split('-');
             const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
             const formatter = new Intl.DateTimeFormat('ru-RU-u-ca-islamic-uma', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
+                day: 'numeric', month: 'long', year: 'numeric'
             });
             document.getElementById('hijri-date-text').innerText = formatter.format(dateObj) + " AH";
         } catch (e) {
@@ -301,7 +570,6 @@
 
     function initDay() {
         document.getElementById('current-day-title').innerText = `День ${currentDay}`;
-        
         const container = document.getElementById('circles-container');
         container.innerHTML = '';
         
@@ -311,14 +579,13 @@
         for (let i = 0; i < 100; i++) {
             const circle = document.createElement('div');
             circle.className = `circle ${savedData[i] ? 'filled' : ''}`;
-            circle.innerText = '10'; // Цифра 10 прямо ВНУТРИ
+            circle.innerText = '10';
             circle.onclick = () => toggleCircle(i);
             container.appendChild(circle);
             if (savedData[i]) filledCount++;
         }
 
         updateStats(filledCount);
-
         const savedDate = localStorage.getItem(getDateKey(currentDay)) || new Date().toISOString().split('T')[0];
         document.getElementById('date-input').value = savedDate;
         updateHijriDate(savedDate);
@@ -328,29 +595,23 @@
     }
 
     function toggleCircle(index) {
-        if (tg.HapticFeedback) {
-            tg.HapticFeedback.impactOccurred('light');
-        }
-
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         let savedData = JSON.parse(localStorage.getItem(getStorageKey(currentDay))) || Array(100).fill(false);
         savedData[index] = !savedData[index];
         localStorage.setItem(getStorageKey(currentDay), JSON.stringify(savedData));
-        
         initDay();
         updateTotalProgress();
     }
 
     function updateStats(filledCount) {
-        const totalIstigfar = filledCount * 10;
-        document.getElementById('day-stats-text').innerText = `Выполнено за день: ${totalIstigfar} / 1000`;
+        document.getElementById('day-stats-text').innerText = `Выполнено за день: ${filledCount * 10} / 1000`;
     }
 
     function updateTotalProgress() {
         let total = 0;
         for (let d = 1; d <= totalDays; d++) {
             let savedData = JSON.parse(localStorage.getItem(getStorageKey(d))) || Array(100).fill(false);
-            let count = savedData.filter(Boolean).length;
-            total += count * 10;
+            total += savedData.filter(Boolean).length * 10;
         }
         document.getElementById('total-progress-text').innerText = `Всего прочитано: ${total} / 40 000`;
     }
@@ -380,8 +641,53 @@
         document.getElementById('hadith-counter').innerText = `${currentHadithIndex + 1}/${hadiths.length}`;
     }
 
+    // Трекеры Намазов (7 дней)
+    function initNamazTrackers() {
+        ['tahajjud', 'duha'].forEach(type => {
+            const grid = document.getElementById(`${type}-grid`);
+            grid.innerHTML = '';
+            let data = JSON.parse(localStorage.getItem(`namaz_${type}`)) || Array(7).fill(false);
+            
+            for (let i = 0; i < 7; i++) {
+                const box = document.createElement('div');
+                box.className = `namaz-day-box ${data[i] ? 'done' : ''}`;
+                box.innerHTML = `<span class="d-name">День ${i+1}</span><span class="d-status">${data[i] ? '✓' : '—'}</span>`;
+                box.onclick = () => {
+                    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+                    data[i] = !data[i];
+                    localStorage.setItem(`namaz_${type}`, JSON.stringify(data));
+                    initNamazTrackers();
+                };
+                grid.appendChild(box);
+            }
+        });
+    }
+
+    // Профиль
+    function saveProfile() {
+        const name = document.getElementById('reg-name').value;
+        const city = document.getElementById('reg-city').value;
+        localStorage.setItem('user_name', name);
+        localStorage.setItem('user_city', city);
+        document.getElementById('user-city').innerText = city || 'Не указан';
+        document.getElementById('profile-status').innerText = '✓ Профиль успешно сохранен!';
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    function loadProfile() {
+        const name = localStorage.getItem('user_name');
+        const city = localStorage.getItem('user_city');
+        if (name) document.getElementById('reg-name').value = name;
+        if (city) {
+            document.getElementById('reg-city').value = city;
+            document.getElementById('user-city').innerText = city;
+        }
+    }
+
     initDay();
     updateTotalProgress();
+    initNamazTrackers();
+    loadProfile();
 </script>
 
 </body>
