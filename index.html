@@ -122,6 +122,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -348,7 +349,7 @@
             await _supabase.from('participants').upsert({
                 User_id: String(userId),
                 Name: name,
-                total_zikr: total
+                Total_zikr: total
             }, { onConflict: 'User_id' });
         } catch(e){}
     }
@@ -359,15 +360,17 @@
             const { data, error } = await _supabase
                 .from('participants')
                 .select('*')
-                .order('total_zikr', { ascending: false });
+                .order('Total_zikr', { ascending: false });
 
             if (data && data.length > 0) {
                 listContainer.innerHTML = '';
                 data.forEach(p => {
+                    let zikrValue = p.Total_zikr !== undefined ? p.Total_zikr : (p.total_zikr || 0);
+                    let userName = p.Name || p.name || 'Участник';
                     listContainer.innerHTML += `
                         <div class="participant-row">
-                            <span>👤 ${p.Name || p.name || 'Участник'}</span>
-                            <b style="color: var(--secondary);">${p.total_zikr || 0} / 40 000</b>
+                            <span>👤 ${userName}</span>
+                            <b style="color: var(--secondary);">${zikrValue} / 40 000</b>
                         </div>
                     `;
                 });
