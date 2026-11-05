@@ -122,7 +122,6 @@
         }
     </style>
 </head>
-
 <body>
 
 <div class="container">
@@ -356,11 +355,17 @@
 
     async function renderCloudParticipants() {
         const listContainer = document.getElementById('participants-list');
+        listContainer.innerHTML = `<p style="font-size:11px; color:var(--secondary);">Загрузка из базы...</p>`;
         try {
             const { data, error } = await _supabase
                 .from('participants')
                 .select('*')
                 .order('Total_zikr', { ascending: false });
+
+            if (error) {
+                listContainer.innerHTML = `<p style="font-size:11px; color:red;">Ошибка: ${error.message}</p>`;
+                return;
+            }
 
             if (data && data.length > 0) {
                 listContainer.innerHTML = '';
@@ -375,10 +380,10 @@
                     `;
                 });
             } else {
-                listContainer.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">Пока нет зарегистрированных участников. Будьте первым!</p>`;
+                listContainer.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">База пуста.</p>`;
             }
         } catch(e) {
-            listContainer.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">Загрузка данных участников...</p>`;
+            listContainer.innerHTML = `<p style="font-size:11px; color:red;">Сбой: ${e.message}</p>`;
         }
     }
 
