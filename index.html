@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Исламский Супер-Апп</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Подключаем Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #1b4332;
@@ -64,7 +66,6 @@
             padding-bottom: 8px;
         }
 
-        /* Шапка профиля */
         .profile-header {
             display: flex;
             align-items: center;
@@ -87,7 +88,6 @@
         .profile-info h3 { margin: 0; font-size: 16px; color: var(--text-main); }
         .profile-info p { margin: 2px 0 0 0; font-size: 12px; color: var(--secondary); }
 
-        /* Навигация дней */
         .day-nav {
             display: flex; align-items: center; justify-content: space-between;
             background: var(--card-bg); backdrop-filter: blur(20px);
@@ -99,7 +99,6 @@
         }
         #current-day-title { font-size: 16px; font-weight: bold; color: var(--secondary); }
 
-        /* Зикр кнопка */
         .zikr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 0; }
         .big-zikr-btn {
             width: 170px; height: 170px; border-radius: 50%;
@@ -115,7 +114,6 @@
 
         .day-stats { text-align: center; font-size: 14px; font-weight: bold; color: var(--accent); margin-top: 12px; }
 
-        /* Месячный календарь намазов */
         .month-calendar-grid {
             display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 8px;
         }
@@ -131,18 +129,15 @@
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); margin-top: 8px;
         }
 
-        /* Тексты аятов */
         .sura-text-item { border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 10px; }
         .translit { color: #cbd5e1; margin-bottom: 4px; font-style: italic; font-size: 13px; line-height: 1.5; }
 
-        /* Таблица лидеров участников */
         .participant-row {
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(0,0,0,0.25); padding: 10px 12px; border-radius: 12px; margin-bottom: 6px; font-size: 12px;
             border: 1px solid var(--card-border);
         }
 
-        /* Нижнее меню */
         .tab-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(18, 24, 20, 0.88); backdrop-filter: blur(25px);
@@ -156,7 +151,6 @@
         .tab-item.active { color: var(--accent); }
         .tab-item svg { width: 22px; height: 22px; fill: currentColor; }
 
-        /* Модальное окно */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; overflow-y: auto; padding: 16px;
@@ -176,7 +170,6 @@
 
 <div class="container">
 
-    <!-- Профиль ТГ -->
     <div class="profile-header">
         <div class="profile-avatar" id="tg-avatar-box">👤</div>
         <div class="profile-info">
@@ -185,7 +178,7 @@
         </div>
     </div>
 
-    <!-- 1. ГЛАВНАЯ (Зикры на 40 дней) -->
+    <!-- 1. ГЛАВНАЯ (Зикры) -->
     <div id="tab-home" class="tab-content active">
         <div class="day-nav">
             <button onclick="changeDay(-1)">← Назад</button>
@@ -215,17 +208,15 @@
         </div>
     </div>
 
-    <!-- 2. СУННА И СУРЫ (Месячный календарь намазов и суры) -->
+    <!-- 2. СУННА И СУРЫ -->
     <div id="tab-namaz" class="tab-content">
         <div class="card">
             <h2>🌙 Тахаджуд Намаз (Календарь месяца)</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Нажмите на день месяца для отметки:</p>
             <div class="month-calendar-grid" id="tahajjud-month-grid"></div>
         </div>
 
         <div class="card">
             <h2>☀️ Духа Намаз (Календарь месяца)</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Нажмите на день месяца для отметки:</p>
             <div class="month-calendar-grid" id="duha-month-grid"></div>
         </div>
 
@@ -245,7 +236,7 @@
         </div>
     </div>
 
-    <!-- 3. КОРАН (114 Сур) -->
+    <!-- 3. КОРАН -->
     <div id="tab-quran" class="tab-content">
         <div class="card">
             <h2>📜 Священный Коран (Все 114 Сур)</h2>
@@ -255,7 +246,7 @@
         </div>
     </div>
 
-    <!-- 4. ПРОФИЛЬ И УЧАСТНИКИ ЧЕЛЛЕНДЖА -->
+    <!-- 4. ПРОФИЛЬ И ОБЛАЧНЫЙ СПИСОК ПОДПИСЧИКОВ -->
     <div id="tab-menu" class="tab-content">
         <div class="card">
             <h2>👤 Профиль Telegram</h2>
@@ -264,21 +255,15 @@
         </div>
 
         <div class="card">
-            <h2>🏆 Участники челенджа (Подписчики бота)</h2>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top:0;">Общая статистика участников:</p>
+            <h2>🏆 Участники челенджа (Все подписчики)</h2>
             <div id="participants-list" style="display: flex; flex-direction: column; gap: 6px;">
-                <!-- Динамически заполнится -->
+                <p style="font-size: 11px; color: var(--text-muted);">Загрузка онлайн участников...</p>
             </div>
         </div>
 
         <div class="card">
             <h2>📜 Архив прошлых циклов Истигфара</h2>
             <button class="btn-ios" onclick="toggleHistoryModal()">Открыть историю циклов</button>
-        </div>
-
-        <div class="card">
-            <h2>📊 Детали текущего цикла</h2>
-            <div id="calendar-zikr" style="display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow-y: auto;"></div>
         </div>
     </div>
 
@@ -315,13 +300,19 @@
 </div>
 
 <script>
+    // ⚙️ ИНИЦИАЛИЗАЦИЯ SUPABASE (Вставьте сюда ваши данные из Supabase):
+    const SUPABASE_URL = "ВАШ_PROJECT_URL";
+    const SUPABASE_KEY = "ВАШ_ANON_PUBLIC_KEY";
+    let _supabase = null;
+    if (SUPABASE_URL !== "ВАШ_PROJECT_URL") {
+        _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+
     const tg = window.Telegram.WebApp;
     tg.expand();
 
     let currentDay = 1;
     const totalDays = 40;
-    
-    // Получаем текущий месяц и количество дней в нем
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -348,6 +339,7 @@
             } else {
                 document.getElementById('tg-avatar-box').innerText = name.charAt(0).toUpperCase();
             }
+            syncWithCloud(user.id, name);
         }
     }
 
@@ -361,7 +353,7 @@
         if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
         if (tabId === 'quran') loadQuranList();
-        if (tabId === 'menu') renderMenuStats();
+        if (tabId === 'menu') renderCloudParticipants();
     }
 
     function initDay() {
@@ -386,15 +378,69 @@
                 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
             updateTotalProgress();
+            
+            // Синхронизация с облаком
+            const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (user) syncWithCloud(user.id, user.first_name);
         }
     }
 
-    function updateTotalProgress() {
+    function getTotalZikrCount() {
         let total = 0;
         for (let d = 1; d <= totalDays; d++) {
             total += parseInt(localStorage.getItem(getStorageKey(d))) || 0;
         }
+        return total;
+    }
+
+    function updateTotalProgress() {
+        let total = getTotalZikrCount();
         document.getElementById('total-progress-text').innerText = `${total} / 40 000`;
+    }
+
+    // Синхронизация данных пользователя в облако Supabase
+    async function syncWithCloud(userId, name) {
+        if (!_supabase) return;
+        const total = getTotalZikrCount();
+        try {
+            await _supabase.from('participants').upsert({
+                user_id: String(userId),
+                name: name,
+                total_zikr: total
+            }, { onConflict: 'user_id' });
+        } catch(e){}
+    }
+
+    // Загрузка реальных участников из облака Supabase
+    async function renderCloudParticipants() {
+        const listContainer = document.getElementById('participants-list');
+        if (!_supabase) {
+            listContainer.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">Подключите ключи Supabase в коде для загрузки подписчиков.</p>`;
+            return;
+        }
+
+        try {
+            const { data, error } = await _supabase
+                .from('participants')
+                .select('*')
+                .order('total_zikr', { ascending: false });
+
+            if (data && data.length > 0) {
+                listContainer.innerHTML = '';
+                data.forEach(p => {
+                    listContainer.innerHTML += `
+                        <div class="participant-row">
+                            <span>👤 ${p.name}</span>
+                            <b style="color: var(--secondary);">${p.total_zikr} / 40 000</b>
+                        </div>
+                    `;
+                });
+            } else {
+                listContainer.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">Будут отображены все зашедшие участники.</p>`;
+            }
+        } catch(e) {
+            listContainer.innerHTML = `<p style="font-size:12px; color:red;">Ошибка связи с облаком.</p>`;
+        }
     }
 
     function changeDay(direction) {
@@ -417,20 +463,15 @@
                 localStorage.removeItem(getStorageKey(d));
             }
 
-            history.push({
-                date: new Date().toLocaleDateString(),
-                total: totalDone,
-                data: currentCycleData
-            });
+            history.push({ date: new Date().toLocaleDateString(), total: totalDone, data: currentCycleData });
             localStorage.setItem('istigfar_history_cycles', JSON.stringify(history));
             
             currentDay = 1;
             initDay();
-            alert("Новый цикл начат! Прошлые данные записаны в историю.");
+            alert("Новый цикл начат!");
         }
     }
 
-    // Инициализация месячного календаря намазов
     function initMonthNamazTrackers() {
         ['tahajjud', 'duha'].forEach(type => {
             const grid = document.getElementById(`${type}-month-grid`);
@@ -452,57 +493,15 @@
         });
     }
 
-    function renderMenuStats() {
-        const calZikr = document.getElementById('calendar-zikr');
-        calZikr.innerHTML = '';
-        for (let d = 1; d <= totalDays; d++) {
-            let cnt = parseInt(localStorage.getItem(getStorageKey(d))) || 0;
-            calZikr.innerHTML += `<div class="history-row"><span>День ${d} (Истигфар)</span><b style="color: var(--secondary);">${cnt} / 1000</b></div>`;
-        }
-
-        // Рендер участников челенджа
-        const partList = document.getElementById('participants-list');
-        const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
-        const myName = user ? `${user.first_name}` : "Вы";
-        
-        let myTotal = 0;
-        for (let d = 1; d <= totalDays; d++) {
-            myTotal += parseInt(localStorage.getItem(getStorageKey(d))) || 0;
-        }
-
-        partList.innerHTML = `
-            <div class="participant-row">
-                <span>⭐ ${myName} (Вы)</span>
-                <b style="color: var(--accent);">${myTotal} / 40 000 зикров</b>
-            </div>
-            <div class="participant-row">
-                <span>👤 Амирхан</span>
-                <b style="color: var(--secondary);">18,400 / 40 000</b>
-            </div>
-            <div class="participant-row">
-                <span>👤 Фатима</span>
-                <b style="color: var(--secondary);">40,000 / 40 000 (Завершено)</b>
-            </div>
-            <div class="participant-row">
-                <span>👤 Тимур</span>
-                <b style="color: var(--secondary);">9,200 / 40 000</b>
-            </div>
-        `;
-    }
-
     function toggleHistoryModal() {
         let history = JSON.parse(localStorage.getItem('istigfar_history_cycles')) || [];
-        let html = "";
-        if (history.length === 0) {
-            html = "<p style='color:var(--text-muted); font-size:13px; text-align:center;'>Архив пока пуст. Завершите хотя бы один 40-дневный цикл.</p>";
-        } else {
-            history.forEach((cycle, index) => {
-                html += `<div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:8px;">
-                    <b style="color:var(--secondary);">Цикл #${index + 1} от ${cycle.date}</b>
-                    <div style="font-size:12px; color:var(--accent); margin-top:4px;">Всего прочитано: ${cycle.total} / 40 000 зикров</div>
-                </div>`;
-            });
-        }
+        let html = history.length === 0 ? "<p style='color:var(--text-muted); font-size:13px; text-align:center;'>Архив пока пуст.</p>" : "";
+        history.forEach((cycle, index) => {
+            html += `<div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:8px;">
+                <b style="color:var(--secondary);">Цикл #${index + 1} от ${cycle.date}</b>
+                <div style="font-size:12px; color:var(--accent); margin-top:4px;">Всего прочитано: ${cycle.total} / 40 000</div>
+            </div>`;
+        });
         document.getElementById('modal-title').innerText = "📜 Архив циклов Истигфара";
         document.getElementById('modal-body').innerHTML = html;
         document.getElementById('reader-modal').style.display = 'block';
@@ -511,54 +510,16 @@
     function closeModal() { document.getElementById('reader-modal').style.display = 'none'; }
 
     function openFullSura(type) {
-        let title = "";
-        let content = "";
+        let title = "", content = "";
         if (type === 'waqia') {
-            title = "Сура «Аль-Вакия» (1-10 аят)";
-            content = `
-                <div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div>
-                <div class="sura-text-item"><div class="translit">1. Иза вака’атиль-ваки’а.</div></div>
-                <div class="sura-text-item"><div class="translit">2. Лейса ли-вака’атиха казиба.</div></div>
-                <div class="sura-text-item"><div class="translit">3. Хафидатур-рафи’а.</div></div>
-                <div class="sura-text-item"><div class="translit">4. Иза руджжатиль-арду раджжа.</div></div>
-                <div class="sura-text-item"><div class="translit">5. Ва буссатиль-джибалу басса.</div></div>
-                <div class="sura-text-item"><div class="translit">6. Фа-канат хабаан мунбасса.</div></div>
-                <div class="sura-text-item"><div class="translit">7. Ва кунтум азваджан саласа.</div></div>
-                <div class="sura-text-item"><div class="translit">8. Фа-асхабуль-майманати ма асхабуль-маймана.</div></div>
-                <div class="sura-text-item"><div class="translit">9. Ва асхабуль-маш’амати ма асхабуль-маш’ама.</div></div>
-                <div class="sura-text-item"><div class="translit">10. Вас-сабикун ас-сабикун.</div></div>
-            `;
+            title = "Сура «Аль-Вакия»";
+            content = `<div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div><div class="sura-text-item"><div class="translit">1. Иза вака’атиль-ваки’а.</div></div><div class="sura-text-item"><div class="translit">2. Лейса ли-вака’атиха казиба.</div></div>`;
         } else if (type === 'duha') {
-            title = "Сура «Ад-Духа» (Полная)";
-            content = `
-                <div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div>
-                <div class="sura-text-item"><div class="translit">1. Вад-духа.</div></div>
-                <div class="sura-text-item"><div class="translit">2. Валь-лейли иза саджа.</div></div>
-                <div class="sura-text-item"><div class="translit">3. Ма вадда’ака Раббука ва ма каля.</div></div>
-                <div class="sura-text-item"><div class="translit">4. Ва ляль-ахирату хайрул-ляка миналь-уля.</div></div>
-                <div class="sura-text-item"><div class="translit">5. Ва лясауфа ю’тика Раббука фатарда.</div></div>
-                <div class="sura-text-item"><div class="translit">6. Алям яджидка ятиман фа-ава.</div></div>
-                <div class="sura-text-item"><div class="translit">7. Ва ваджадака даллян фа-хада.</div></div>
-                <div class="sura-text-item"><div class="translit">8. Ва ваджадака ‘аилан фа-агна.</div></div>
-                <div class="sura-text-item"><div class="translit">9. Фа-аммаль-ятима фаля такхар.</div></div>
-                <div class="sura-text-item"><div class="translit">10. Ва аммас-са’иля фаля танхар.</div></div>
-                <div class="sura-text-item"><div class="translit">11. Ва амма би-ни’мати Раббика фахаддис.</div></div>
-            `;
+            title = "Сура «Ад-Духа»";
+            content = `<div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div><div class="sura-text-item"><div class="translit">1. Вад-духа.</div></div><div class="sura-text-item"><div class="translit">2. Валь-лейли иза саджа.</div></div>`;
         } else if (type === 'kahf') {
-            title = "Сура «Аль-Кахф» (1-10 аят)";
-            content = `
-                <div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div>
-                <div class="sura-text-item"><div class="translit">1. Аль-хамду лилляhиль-лязи анзаля ‘аля ‘абдихиль-китаба ва лям ядж’аль-ляху ‘иваджа.</div></div>
-                <div class="sura-text-item"><div class="translit">2. Каййималь-лиюнзира ба’сан шадида-м-миллядунху ва юбашшираль-му’мининаль-лязина я’малюнас-салихати анна ляхум аджран хасана.</div></div>
-                <div class="sura-text-item"><div class="translit">3. Макисина фихи абада.</div></div>
-                <div class="sura-text-item"><div class="translit">4. Ва юнзираль-лязина калюттахазаллаху валяда.</div></div>
-                <div class="sura-text-item"><div class="translit">5. Ма ляхум бихи мин ‘ильмин ва ля ли-аба’ихим. Кабурат калиматан тахруджу мин афвахихим. Ин якулюна илля казиба.</div></div>
-                <div class="sura-text-item"><div class="translit">6. Фаля’алляка бахи’ун нафсака ‘аля асарихим ин лям ю’мину бихазаль-хадиси асафа.</div></div>
-                <div class="sura-text-item"><div class="translit">7. Инна джа’альна ма ‘аляль-арды зинаталь-ляха ли-наблювахум айюхум ахсану ‘амаля.</div></div>
-                <div class="sura-text-item"><div class="translit">8. Ва инна ля-джа’илюна ма ‘аляйха са’идан джуруза.</div></div>
-                <div class="sura-text-item"><div class="translit">9. Ам хасибта анна асхабаль-кахфи вар-ракиими кану мин аятина ‘аджаба.</div></div>
-                <div class="sura-text-item"><div class="translit">10. Из ава аль-фитьяту иляль-кахфи фа-калю Раббана атина мил-ладунка рахматан ва хаййи’ ляна мин амрина рашада.</div></div>
-            `;
+            title = "Сура «Аль-Кахф»";
+            content = `<div class="sura-text-item"><div class="translit">Бисмилляхи-р-Рахмани-р-Рахим</div></div><div class="sura-text-item"><div class="translit">1. Аль-хамду лилляhиль-лязи анзаля ‘аля ‘абдихиль-китаба ва лям ядж’аль-ляху ‘иваджа.</div></div>`;
         }
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-body').innerHTML = content;
@@ -575,24 +536,16 @@
             data.data.forEach(surah => {
                 const item = document.createElement('div');
                 item.style.cssText = "background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--card-border);";
-                item.innerHTML = `
-                    <div>
-                        <b style="color:var(--secondary); font-size:13px;">${surah.number}. ${surah.englishName}</b>
-                        <div style="font-size:11px; color:var(--text-muted);">${surah.englishNameTranslation} (${surah.numberOfAyahs} аятов)</div>
-                    </div>
-                    <span style="color:var(--accent); font-family:serif; font-size:16px;">${surah.name}</span>
-                `;
+                item.innerHTML = `<div><b style="color:var(--secondary); font-size:13px;">${surah.number}. ${surah.englishName}</b><div style="font-size:11px; color:var(--text-muted);">${surah.englishNameTranslation}</div></div><span style="color:var(--accent); font-family:serif; font-size:16px;">${surah.name}</span>`;
                 item.onclick = () => loadSurahWithTranslation(surah.number, surah.englishName);
                 container.appendChild(item);
             });
-        } catch (e) {
-            container.innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Ошибка загрузки Корана</p>';
-        }
+        } catch (e) { container.innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Ошибка загрузки Корана</p>'; }
     }
 
     async function loadSurahWithTranslation(number, name) {
         document.getElementById('modal-title').innerText = `Сура ${number}. ${name}`;
-        document.getElementById('modal-body').innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Загрузка аятов и перевода...</p>";
+        document.getElementById('modal-body').innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Загрузка аятов...</p>";
         document.getElementById('reader-modal').style.display = 'block';
         try {
             const [resArabic, resRu] = await Promise.all([
@@ -603,20 +556,10 @@
             const dataRu = await resRu.json();
             let html = '';
             for (let i = 0; i < dataArabic.data.ayahs.length; i++) {
-                const ayahAr = dataArabic.data.ayahs[i];
-                const ayahRu = dataRu.data.ayahs[i];
-                html += `
-                    <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 10px;">
-                        <div style="font-size:16px; text-align:right; color:var(--secondary); font-family:serif; margin-bottom:4px;">${ayahAr.text} ۝ (${ayahAr.numberInSurah})</div>
-                        <div style="font-size:12px; color:var(--text-muted);">${ayahRu.text}</div>
-                    </div>
-                `;
+                html += `<div style="border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 10px;"><div style="font-size:16px; text-align:right; color:var(--secondary); font-family:serif; margin-bottom:4px;">${dataArabic.data.ayahs[i].text} ۝</div><div style="font-size:12px; color:var(--text-muted);">${dataRu.data.ayahs[i].text}</div></div>`;
             }
-            document.getElementById('reader-modal').style.display = 'block';
             document.getElementById('modal-body').innerHTML = html;
-        } catch (e) {
-            document.getElementById('modal-body').innerHTML = "<p style='color:red;'>Не удалось загрузить суру.</p>";
-        }
+        } catch (e) { document.getElementById('modal-body').innerHTML = "<p style='color:red;'>Не удалось загрузить суру.</p>"; }
     }
 
     initTelegramProfile();
